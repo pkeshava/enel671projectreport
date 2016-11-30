@@ -394,18 +394,20 @@
 % As a general rule, do not put math, special symbols or citations
 % in the abstract or keywords.
 \begin{abstract}
-The abstract goes here.
+The purpose of this project is to analyze the performance of three different
+adaptive algorithms. These algorithms, which can be used for a variety of
+applications such as echo cancellation and multipath mitigation, are implmented for
+the purposes of equalizing a dispersive channel. The first algorithm
+investigated is the Least Mean Squares (LMS). The LMS filter uses a search method to minimize the mean square error.
+The performance of the LMS is then compared to the Recursive Least Squares (RLS) method, which minimizes a weighted linear least squares cost funtion.
+Finally the Recursive Least Squares Lattice algorithm is implemented in the third project for joint process estimation.
+The algorithms are tested against multiple channels with varying eigenvalue spreads. Furthermore
+different design parameters such as step size and filter order are evaluated.
+The performance with regards to convergence speed and complexity is discussed. The RLSL appears to have
+performance advantages in terms of convergence speed at the cost of a significant increase in complexity.
 \end{abstract}
 
 % Note that keywords are not normally used for peerreview papers.
-\begin{IEEEkeywords}
-IEEE, IEEEtran, journal, \LaTeX, paper, template.
-\end{IEEEkeywords}
-
-
-
-
-
 
 % For peer review papers, you can put extra information on the cover
 % page as needed:
