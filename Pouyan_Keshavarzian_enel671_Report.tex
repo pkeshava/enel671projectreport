@@ -373,8 +373,10 @@
 % was not built to handle multiple paragraphs
 %
 
-\author{Pouyan Keshavarzian,~\IEEEmembership{ Student Member,~IEEE,}}
-
+\author{Pouyan Keshavarzian,~\IEEEmembership{Student Member,~IEEE,}
+\\ pkeshava@ucalgary.ca
+\\ UCID 10053710
+\\Electrical \& Computer Engineering, University of Calgary}
 
 % The paper headers
 \markboth{Pouyan Keshavarzian ENEL 671 FALL 2016}%
@@ -390,7 +392,6 @@
 
 % make the title area
 \maketitle
-
 % As a general rule, do not put math, special symbols or citations
 % in the abstract or keywords.
 \begin{abstract}
@@ -404,7 +405,7 @@ Finally the Recursive Least Squares Lattice algorithm is implemented in the thir
 The algorithms are tested against multiple channels with varying eigenvalue spreads. Furthermore
 different design parameters such as step size and filter order are evaluated.
 The performance with regards to convergence speed and complexity is discussed. The RLSL appears to have
-performance advantages in terms of convergence speed at the cost of a significant increase in complexity.
+performance advantages in terms of convergence speed at the cost of significant increase in complexity.
 \end{abstract}
 
 % Note that keywords are not normally used for peerreview papers.
@@ -437,23 +438,36 @@ performance advantages in terms of convergence speed at the cost of a significan
 %
 % Here we have the typical use of a "T" for an initial drop letter
 % and "HIS" in caps to complete the first word.
-\IEEEPARstart{A}{daptive} filtering is used for a variety of applications. One
-such use case is for adaptive equalization. That is to remove unwanted signals from
-the channel output which can be caused by multipath or other distortions
+\IEEEPARstart{A}{daptive} filtering is used for a variety of applications. When communicating
+across a dispersive channel, a signal is destorted by effects of multipath, noise etc REFERENCE.
+To recover the correct message at the receiver, an adaptive filter is implemented to equalize the channel. In general, an
+algorithm is used to calculate the optimum filter coefficients to minimize the error between transmit and receive. In practice, a
+signal transmitted along a channel contains a preamble, which is a known sequence of data that is used to esimate the parameters of the channel.
+The statistics are assumed to be stationary in the window of time that each preamble is sent. \\ \indent The most common adaptive equalizers involve
+the LMS, RLS, ans RLSL algorithms. The performance of these methods varies and they each have their advantages and disadvantages.
+The LMS is relatively simplistic in terms of implmentation. However, it's drawback is that it uses a stochastic search gradient
+and which limits its ability to find an optimum solution, is inefficient and not practically capable of removing all distortions. The RLS algorithm is typically an order of magnitude
+faster because it whitens the input data gy using the inverse correlation matrix of the data, assumed to be of zero mean REF. The RLSL
+algorithm uses a lattice predictor along with a stage that estimates the error of the next filter order at each time step.\\
+\indent The methodology used for designing of the filters in this project will be discussed. Afterwards a detailed analysis of the results
+for each project and a summary of their implications will be discussed. Finally a conclusions section will highlight the general results drawn from each
+experiment.
+
+
+
 % You must have at least 2 lines in the paragraph with the drop letter
 % (should never be an issue)
 
 
 \section{Equalization Methodology}
-\IEEEPARstart{A}{daptive} filtering is used for a variety of applications. One
-such use case is for adaptive equalization. That is to remove unwanted signals from
-the channel output which can be caused by multipath or other distortions
+\IEEEPARstart{A}{daptive} equalization is designed to remove unwanted signals from
+a channel output which can be caused by multipath or other distortions.
 \begin{figure*}
   \centering
   \captionsetup{justification=centering}
   \includegraphics[width=0.90\textwidth] {Plots/BlockDiagram}
-  \caption{BLAH BLAH}
-    \label{fig:BLAH BLAH}
+  \caption{Block Diagram for Equalization}
+    \label{fig:BLOCK}
 \end{figure*}
 \IEEEPARstart{A}{daptive} filtering is used for a variety of applications. One
 
@@ -606,10 +620,6 @@ Subsubsection text here.
 \section{Conclusion}
 The conclusion goes here.
 
-
-
-
-
 % if have a single appendix:
 %\appendix[Proof of the Zonklar Equations]
 % or
@@ -623,7 +633,6 @@ The conclusion goes here.
 % \subsection or using \label (\appendices by itself
 % starts a section numbered zero.)
 %
-
 
 \appendices
 \section{Proof of the First Zonklar Equation}
