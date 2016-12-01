@@ -461,7 +461,28 @@ experiment.
 
 \section{Equalization Methodology}
 \IEEEPARstart{A}{daptive} equalization is designed to remove unwanted signals from
-a channel output which can be caused by multipath or other distortions.
+a channel output which can be caused by multipath or other distortions. In Figure~\ref{fig:BLOCK} the
+general block diargram that is simulated in these experiments is outlined. A data source that
+generates a random BPSK signal goes through a dispersive channel that has three paths and white noise.
+The adaptive filter reduces the effects of these signal distortions to generate the output.To compare the output of
+the filter to the truth data source adequate delay must be added to the BPSK data. The optimal delay is given by
+half the filter order, that is:
+$$\Delta = \dfrac{M}{2}$$
+The output of each stage is as follows:
+\[
+\boldsymbol{u}(n) =\begin{bmatrix}u(n) & u(n-1) & ...  & u(n-M+1)\end{bmatrix}^T\\\mbox{}
+\]
+$$= \boldsymbol{h}^T(n)\boldsymbol{a}(n) + \boldsymbol{v}(n)$$
+\[
+\boldsymbol{w} =\begin{bmatrix}w_0 & w_1 & ... & w_{M-1}\end{bmatrix}^T\\\mbox{}
+\]
+$$ = \boldsymbol{w}(n-1)+\mu\boldsymbol{u}(n)e(n)$$
+$$\hat{d}(n) = y(n) = \boldsymbol{w}^T(n)\boldsymbol{u}(n) = \boldsymbol{u}^T(n)\boldsymbol{w}(n)$$
+$$e(n) = d(n) - \hat{d}(n) = d(n) - \boldsymbol{w}^T\boldsymbol{u}(n)$$
+$$a(n) = d(n) - \hat{d}(n) = d(n) - \boldsymbol{w}^T\boldsymbol{u}(n)$$
+$$\boldsymbol{R} = E[\boldsymbol{u}(n)\boldsymbol{u}(n)^T] $$
+$$\boldsymbol{p} = E[\boldsymbol{u}(n)d(n)]$$
+$$\boldsymbol{J}(n) = \sigma^2_d - 2\boldsymbol{w}^T\boldsymbol{p} + \boldsymbol{w}^T\boldsymbol{R}\boldsymbol{w}$$
 \begin{figure*}
   \centering
   \captionsetup{justification=centering}
@@ -469,8 +490,6 @@ a channel output which can be caused by multipath or other distortions.
   \caption{Block Diagram for Equalization}
     \label{fig:BLOCK}
 \end{figure*}
-\IEEEPARstart{A}{daptive} filtering is used for a variety of applications. One
-
 
 \section{Pre Experiment Calculations}
 \section{Project 1: Least Mean Squares Algorithm}
