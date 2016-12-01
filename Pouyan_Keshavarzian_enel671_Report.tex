@@ -397,7 +397,7 @@
 \begin{abstract}
 The purpose of this project is to analyze the performance of three different
 adaptive algorithms. These algorithms, which can be used for a variety of
-applications such as echo cancellation and multipath mitigation, are implmented for
+applications such as echo cancellation and beamforming, are implemented for
 the purposes of equalizing a dispersive channel. The first algorithm
 investigated is the Least Mean Squares (LMS). The LMS filter uses a search method to minimize the mean square error.
 The performance of the LMS is then compared to the Recursive Least Squares (RLS) method, which minimizes a weighted linear least squares cost funtion.
@@ -444,8 +444,8 @@ To recover the correct message at the receiver, an adaptive filter is implemente
 algorithm is used to calculate the optimum filter coefficients to minimize the error between transmit and receive. In practice, a
 signal transmitted along a channel contains a preamble, which is a known sequence of data that is used to esimate the parameters of the channel.
 The statistics are assumed to be stationary in the window of time that each preamble is sent. \\ \indent The most common adaptive equalizers involve
-the LMS, RLS, ans RLSL algorithms. The performance of these methods varies and they each have their advantages and disadvantages.
-The LMS is relatively simplistic in terms of implmentation. However, it's drawback is that it uses a stochastic search gradient
+the LMS, RLS, ans RLSL algorithms. The performance of these methods varies and they each have their advantages and drawbacks.
+The LMS is relatively simplistic in terms of hardware/software resources. However, it's drawback is that it uses a stochastic search gradient
 and which limits its ability to find an optimum solution, is inefficient and not practically capable of removing all distortions. The RLS algorithm is typically an order of magnitude
 faster because it whitens the input data gy using the inverse correlation matrix of the data, assumed to be of zero mean REF. The RLSL
 algorithm uses a lattice predictor along with a stage that estimates the error of the next filter order at each time step.\\
@@ -460,29 +460,6 @@ experiment.
 
 
 \section{Equalization Methodology}
-\IEEEPARstart{A}{daptive} equalization is designed to remove unwanted signals from
-a channel output which can be caused by multipath or other distortions. In Figure~\ref{fig:BLOCK} the
-general block diargram that is simulated in these experiments is outlined. A data source that
-generates a random BPSK signal goes through a dispersive channel that has three paths and white noise.
-The adaptive filter reduces the effects of these signal distortions to generate the output.To compare the output of
-the filter to the truth data source adequate delay must be added to the BPSK data. The optimal delay is given by
-half the filter order, that is:
-$$\Delta = \dfrac{M}{2}$$
-The output of each stage is as follows:
-\[
-\boldsymbol{u}(n) =\begin{bmatrix}u(n) & u(n-1) & ...  & u(n-M+1)\end{bmatrix}^T\\\mbox{}
-\]
-$$= \boldsymbol{h}^T(n)\boldsymbol{a}(n) + \boldsymbol{v}(n)$$
-\[
-\boldsymbol{w} =\begin{bmatrix}w_0 & w_1 & ... & w_{M-1}\end{bmatrix}^T\\\mbox{}
-\]
-$$ = \boldsymbol{w}(n-1)+\mu\boldsymbol{u}(n)e(n)$$
-$$\hat{d}(n) = y(n) = \boldsymbol{w}^T(n)\boldsymbol{u}(n) = \boldsymbol{u}^T(n)\boldsymbol{w}(n)$$
-$$e(n) = d(n) - \hat{d}(n) = d(n) - \boldsymbol{w}^T\boldsymbol{u}(n)$$
-$$a(n) = d(n) - \hat{d}(n) = d(n) - \boldsymbol{w}^T\boldsymbol{u}(n)$$
-$$\boldsymbol{R} = E[\boldsymbol{u}(n)\boldsymbol{u}(n)^T] $$
-$$\boldsymbol{p} = E[\boldsymbol{u}(n)d(n)]$$
-$$\boldsymbol{J}(n) = \sigma^2_d - 2\boldsymbol{w}^T\boldsymbol{p} + \boldsymbol{w}^T\boldsymbol{R}\boldsymbol{w}$$
 \begin{figure*}
   \centering
   \captionsetup{justification=centering}
@@ -490,9 +467,63 @@ $$\boldsymbol{J}(n) = \sigma^2_d - 2\boldsymbol{w}^T\boldsymbol{p} + \boldsymbol
   \caption{Block Diagram for Equalization}
     \label{fig:BLOCK}
 \end{figure*}
+\IEEEPARstart{A}{daptive} equalization is designed to remove unwanted signals from
+a channel output which can be caused by multipath or other distortions. In Figure~\ref{fig:BLOCK} the
+general block diagram that is simulated in these experiments is outlined. A data source that
+generates a random BPSK signal goes through a dispersive channel that has three paths and white noise.
+The adaptive filter reduces the effects of these signal distortions to generate the output.
+Before the specifics of this block diagram is discussed a few general principles of
+Wiener filter theory will be discussed. The aurocorrelation matrix is defined as
+$$\boldsymbol{R} = E[\boldsymbol{u}(n)\boldsymbol{u}(n)^T] $$
+\\
+and the autocovariance:
+$$\boldsymbol{p} = E[\boldsymbol{u}(n)d(n)]$$
 
+it can be shown from REF that the Wiener-Hopf or Normal Equation can be solved for
+the optimum tap weights:
+ $$\boldsymbol{Rw} = \boldsymbol{p}$$
+although this is computationaly wasteful and the matrix \textbf{R} may not
+always be invertable therefore adaptive algorithms are used to determine the tap weight vector.
+\[
+\boldsymbol{w} =\begin{bmatrix}w_0 & w_1 & ... & w_{M-1}\end{bmatrix}^T\\\mbox{}
+\]
+The output of the channel, which is the input to the adaptive filter is defined as:
+\[
+\boldsymbol{u}(n) =\begin{bmatrix}u(n) & u(n-1) & ...  & u(n-M+1)\end{bmatrix}^T\\\mbox{}
+\]
+$$= \boldsymbol{h}^T(n)\boldsymbol{a}(n) + \boldsymbol{v}(n)$$
+where  \textbf{h} is known as the channel impulse response. The impulse response for the four channels
+with varying distortion are defined as
+\begin{table}[H]
+\centering
+ \begin{tabular}{ | c || c | c | c |}
+    \hline
+    Channel & $\boldsymbol{h}_1$ & $\boldsymbol{h}_2$ & $\boldsymbol{h}_3$\\
+    \hline\hline
+    1 & 0.2194 & 1 & 0.2194 \\
+    \hline
+    2 & 0.2798 & 1 & 0.2798 \\
+    \hline
+    3 & 0.3365 & 1 & 0.3365\\
+    \hline
+    4 & 0.3887 & 1 & 0.3887\\
+    \hline
+  \end{tabular}
+  \caption{Problem 1 Calculations}
+  \label{table:calcs}
+\end{table}
+To compare the output of the filter to the truth data source adequate delay must be added to the BPSK data. The optimal delay is given by
+half the filter order, that is:
+$$\Delta = \dfrac{M}{2}$$
 \section{Pre Experiment Calculations}
 \section{Project 1: Least Mean Squares Algorithm}
+$$ = \boldsymbol{w}(n-1)+\mu\boldsymbol{u}(n)e(n)$$
+$$\hat{d}(n) = y(n) = \boldsymbol{w}^T(n)\boldsymbol{u}(n) = \boldsymbol{u}^T(n)\boldsymbol{w}(n)$$
+$$e(n) = d(n) - \hat{d}(n) = d(n) - \boldsymbol{w}^T\boldsymbol{u}(n)$$
+
+$$\boldsymbol{J}(n) = \sigma^2_d - 2\boldsymbol{w}^T\boldsymbol{p} + \boldsymbol{w}^T\boldsymbol{R}\boldsymbol{w}$$
+
+
 \subsection{Subsection Heading Here}
 Subsection text here.
 \begin{figure}[H]
