@@ -516,6 +516,22 @@ To compare the output of the filter to the truth data source adequate delay must
 half the filter order, that is:
 $$\Delta = \dfrac{M}{2}$$
 \section{Pre Experiment Calculations}
+\[
+R=
+    \begin{bsmallmatrix}
+    r(0) & r(1) & r(2) & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+    r(1) & r(0) & r(1) & r(2) & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+    r(2) & r(1) & r(0) & r(1) & r(2) & 0 & 0 & 0 & 0 & 0 & 0\\
+    0 & r(2) & r(1) & r(0) & r(1) & r(2) & 0 & 0 & 0 & 0 & 0\\
+    0 & 0 & r(2) & r(1) & r(0) & r(1) & r(2) & 0 & 0 & 0 & 0\\
+    0 & 0 & 0 & r(2) & r(1) & r(0) & r(1) & r(2) & 0 & 0 & 0\\
+    0 & 0 & 0 & 0 & r(2) & r(1) & r(0) & r(1) & r(2) & 0 & 0\\
+    0 & 0 & 0 & 0 & 0 & r(2) & r(1) & r(0) & r(1) & r(2) & 0\\
+    0 & 0 & 0 & 0 & 0 & 0 & r(2) & r(1) & r(0) & r(1) & r(2)\\
+    0 & 0 & 0 & 0 & 0 & 0 & 0 & r(2) & r(1) & r(0) & r(1)\\
+    0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & r(1) & r(0)\\
+  \end{bsmallmatrix}
+\]
 \section{Project 1: Least Mean Squares Algorithm}
 $$ = \boldsymbol{w}(n-1)+\mu\boldsymbol{u}(n)e(n)$$
 $$\hat{d}(n) = y(n) = \boldsymbol{w}^T(n)\boldsymbol{u}(n) = \boldsymbol{u}^T(n)\boldsymbol{w}(n)$$
