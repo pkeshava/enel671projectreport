@@ -165,7 +165,7 @@
 \usepackage[]{mcode} % Matlab code
 \providecommand{\e}[1]{\ensuremath{\times 10^{#1}}}
 \usepackage[export]{adjustbox}
-
+\usepackage{array}
 \usepackage{caption}
 % *** MATH PACKAGES ***
 %
@@ -420,7 +420,7 @@ performance advantages in terms of convergence speed at the cost of significant 
 % creates the second title. It will be ignored for other modes.
 \IEEEpeerreviewmaketitle
 
-
+\small
 
 \section{Introduction}
 % The very first letter is a 2 line initial drop letter followed
@@ -509,15 +509,17 @@ with varying distortion are defined as
     4 & 0.3887 & 1 & 0.3887\\
     \hline
   \end{tabular}
-  \caption{Problem 1 Calculations}
-  \label{table:calcs}
+  \caption{Channel Parameters}
+  \label{table:channel}
 \end{table}
 To compare the output of the filter to the truth data source adequate delay must be added to the BPSK data. The optimal delay is given by
 half the filter order, that is:
 $$\Delta = \dfrac{M}{2}$$
 \section{Pre Experiment Calculations}
+From analysis we are given that the input autocorrelation matrix has
+a quintdiagonal structure of the form given by:\\
 \[
-R=
+\boldsymbol{R}=
     \begin{bsmallmatrix}
     r(0) & r(1) & r(2) & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
     r(1) & r(0) & r(1) & r(2) & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
@@ -529,9 +531,38 @@ R=
     0 & 0 & 0 & 0 & 0 & r(2) & r(1) & r(0) & r(1) & r(2) & 0\\
     0 & 0 & 0 & 0 & 0 & 0 & r(2) & r(1) & r(0) & r(1) & r(2)\\
     0 & 0 & 0 & 0 & 0 & 0 & 0 & r(2) & r(1) & r(0) & r(1)\\
-    0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & r(1) & r(0)\\
+    0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & r(2) & r(1) & r(0)\\
   \end{bsmallmatrix}
 \]
+\\
+$$  r(0) = h_1^2 + h_2^2 + h_3^2 $$
+$$  r(1) = h_1h_2 + h_2h_3 $$
+$$  r(2) = h_1h_3 $$
+using the equations given the input autocorelation matrix and can be evaluated
+for each channel. The eigenvalue spreads for each channel are shown in Table ~\ref{table:eigenspread}
+
+\begin{table}[H]
+  \centering
+ \begin{tabular}{ | c || p{1.5cm} | p{1.5cm} | p{1.5cm} |}
+    \hline
+    Channel & Min Eigenvalue, $\lambda_{min}$  & Max Eigenvalue, $\lambda_{max}$ & Eigenvalue Spread $\chi = \lambda_{max}/\lambda_{min}$\\
+    \hline\hline
+    1 & 0.3330 & 2.2086 & 6.0915 \\
+    \hline
+    2 & 0.2127 & 2.3752 & 11.1663 \\
+    \hline
+    3 & 0.1246 & 2.7256 & 21.8725 \\
+    \hline
+    4 & 0.0647 & 3.0695 & 47.4274 \\
+    \hline
+  \end{tabular}
+  \caption{Pre-Experiment Calculations}
+  \label{table:eigenspread}
+\end{table}
+
+As is shown, each channel has progressively worse eigenvalue spread. The effect
+of this on certain algorithms will be discussed in the following sections
+
 \section{Project 1: Least Mean Squares Algorithm}
 $$ = \boldsymbol{w}(n-1)+\mu\boldsymbol{u}(n)e(n)$$
 $$\hat{d}(n) = y(n) = \boldsymbol{w}^T(n)\boldsymbol{u}(n) = \boldsymbol{u}^T(n)\boldsymbol{w}(n)$$
@@ -585,7 +616,7 @@ Subsection text here.
 
 \subsubsection{Subsubsection Heading Here}
 Subsubsection text here.
-
+\normalsize
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
 % For figures, \caption should occur after the \includegraphics.
