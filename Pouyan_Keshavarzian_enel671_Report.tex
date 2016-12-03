@@ -564,14 +564,26 @@ As is shown, each channel has progressively worse eigenvalue spread. The effect
 of this on certain algorithms will be discussed in the following sections
 
 \section{Project 1: Least Mean Squares Algorithm}
-$$ = \boldsymbol{w}(n-1)+\mu\boldsymbol{u}(n)e(n)$$
-$$\hat{d}(n) = y(n) = \boldsymbol{w}^T(n)\boldsymbol{u}(n) = \boldsymbol{u}^T(n)\boldsymbol{w}(n)$$
-$$e(n) = d(n) - \hat{d}(n) = d(n) - \boldsymbol{w}^T\boldsymbol{u}(n)$$
+The LMS algorithm implements a search method to iteratively update the
+filter tap weights to find an optimal solution.
 
+The mean squared error is defined by:
 $$\boldsymbol{J}(n) = \sigma^2_d - 2\boldsymbol{w}^T\boldsymbol{p} + \boldsymbol{w}^T\boldsymbol{R}\boldsymbol{w}$$
 
+where
+$$\sigma^2_d$$ is the deterministic variance and the tap weight vector is
+$$ \boldsymbol{w}(n)= \boldsymbol{w}(n-1)+\mu\boldsymbol{u}(n)e(n)$$
+The filter output which is the tap-weight vector multipled by the tap input vector
+$$\hat{d}(n) = y(n) = \boldsymbol{w}^T(n)\boldsymbol{u}(n) = \boldsymbol{u}^T(n)\boldsymbol{w}(n)$$
+Intuitively the error of the filter is simply the is the estimate subtracted from the desired signal.
+$$e(n) = d(n) - \hat{d}(n) = d(n) - \boldsymbol{w}^T\boldsymbol{u}(n)$$
+Which in the context of this project is the randomly generated BPSK signal.
 
-\subsection{Subsection Heading Here}
+
+
+\subsection{Effect of Eigenvalue Spread}
+The results for the eigenvalue spread experiment are shown in Figure
+
 Subsection text here.
 \begin{figure}[H]
   \centering
