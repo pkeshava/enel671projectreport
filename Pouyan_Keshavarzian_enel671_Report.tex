@@ -540,7 +540,7 @@ $$  r(1) = h_1h_2 + h_2h_3 $$
 $$  r(2) = h_1h_3 $$
 using the equations given the input autocorelation matrix and can be evaluated
 for each channel. The eigenvalue spreads for each channel are shown in Table ~\ref{table:eigenspread}
-
+\linespread{0.8}
 \begin{table}[H]
   \centering
  \begin{tabular}{ | c || p{1.5cm} | p{1.5cm} | p{1.5cm} |}
@@ -578,57 +578,94 @@ $$\hat{d}(n) = y(n) = \boldsymbol{w}^T(n)\boldsymbol{u}(n) = \boldsymbol{u}^T(n)
 Intuitively the error of the filter is simply the is the estimate subtracted from the desired signal.
 $$e(n) = d(n) - \hat{d}(n) = d(n) - \boldsymbol{w}^T\boldsymbol{u}(n)$$
 Which in the context of this project is the randomly generated BPSK signal.
-
-
-
 \subsection{Effect of Eigenvalue Spread}
-The results for the eigenvalue spread experiment are shown in Figure
-
-Subsection text here.
+The LMS algorithm was run with total K = 500 iterations and the error for each value of the tap input vector n = 1,2,...N was averaged. The error was then used to calculate the mean
+square error using the formula:
+$$MSE=\dfrac{1}{K}\sum_{k=1}^{K}e_k^2(n); \qquad n = 1,2,....N$$
+This is known as the learning curve of the algorithm. The learning curve is used to judge the
+performance of each experiment.The results for the eigenvalue spread experiment are shown in Figure~\ref{fig:eigenspread}
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}
   \includegraphics[width=0.55\textwidth, inner] {Plots/Project1_Part1_2.jpg}
-  \caption{BLAH BLAH}
-    \label{fig:BLAH BLAH}
+  \caption{Learning Curves for Different Channels}
+    \label{fig:eigenspread}
 \end{figure}
-\subsection{Subsection Heading Here}
-Subsection text here.
+These results show that the LMS is very suceptible to eigenvalue spread
+
+\subsection{Effect of Filter Order}
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}
   \includegraphics[width=0.55\textwidth, inner] {Plots/Project1_Part3.jpg}
-  \caption{BLAH BLAH}
-    \label{fig:BLAH BLAH}
+  \caption{Learning Curves with Varying Filter Order}
+    \label{fig:filterorder1}
 \end{figure}
-\subsection{Subsection Heading Here}
-Subsection text here.
+
+\subsection{Analysis of Step Size Parameter}
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}
   \includegraphics[width=0.55\textwidth, inner] {Plots/Project1_Part4.jpg}
-  \caption{BLAH BLAH}
-    \label{fig:BLAH BLAH}
+  \caption{Learning Curves of Varying Step Size Parameters}
+    \label{fig:stepsize}
 \end{figure}
-\subsection{Subsection Heading Here}
-Subsection text here.
+
+\subsection{Comparison of Normalized LMS and Standard LMS}
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}
   \includegraphics[width=0.55\textwidth, inner] {Plots/Project1_Part5.jpg}
-  \caption{BLAH BLAH}
-    \label{fig:BLAH BLAH}
+  \caption{Learning Curves of Standard and Normalized LMS Algorithms}
+    \label{fig:normalizedlms}
 \end{figure}
-
-\subsection{Subsection Heading Here}
-Subsection text here.
 
 % needed in second column of first page if using \IEEEpubid
 %\IEEEpubidadjcol
 
-\subsubsection{Subsubsection Heading Here}
-Subsubsection text here.
-\normalsize
+\section{Project 2: Recursive Least Squares Algorithm}
+\subsubsection{Effect of Eigenvalue Spread}
+\begin{figure}[H]
+  \centering
+  \captionsetup{justification=centering}
+  \includegraphics[width=0.55\textwidth, inner] {Plots/Project2_eigenspread.jpg}
+  \caption{Effect of Eigenvalue Spread}
+    \label{fig:eigenspread2}
+\end{figure}
+
+\subsubsection{Effect of Filter Order}
+\begin{figure}[H]
+  \centering
+  \captionsetup{justification=centering}
+  \includegraphics[width=0.55\textwidth, inner] {Plots/Project2_filterorder.jpg}
+  \caption{Effect of Eigenvalue Spread}
+    \label{fig:filterorder}
+\end{figure}
+
+\subsubsection{Tap-Weight Analysis}
+\begin{figure}[H]
+  \centering
+  \captionsetup{justification=centering}
+  \includegraphics[width=0.55\textwidth, inner] {Plots/Project2_weights.jpg}
+  \caption{Effect of Filter Order}
+    \label{fig:weights}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \captionsetup{justification=centering}
+  \includegraphics[width=0.55\textwidth, inner] {Plots/Project2_w6.jpg}
+  \caption{Stem Plot of Steady-State Tap-Weights}
+    \label{fig:w6}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \captionsetup{justification=centering}
+  \includegraphics[width=0.55\textwidth, inner] {Plots/Project2_MagnitudeSpectrum.jpg}
+  \caption{Center Tap Weight, $w_6$}
+    \label{fig:magspec}
+\end{figure}
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
 % For figures, \caption should occur after the \includegraphics.
@@ -767,7 +804,7 @@ The authors would like to thank...
 \fi
 
 
-
+\normalsize
 % trigger a \newpage just before the given reference
 % number - used to balance the columns on the last page
 % adjust value as needed - may need to be readjusted if
