@@ -596,7 +596,7 @@ For $n = 1:N$\\
   \boldsymbol{w}(n)= \boldsymbol{w}(n-1)+\mu\boldsymbol{u}(n)e(n)
 \end{equation}
 End n loop\\
-\textbf{Step 5:} Average error for MSE calculation\\
+\textbf{Step 5:} Add squared error for MSE calculation\\
 End k loop\\
 \textbf{Step 6:} Calculate MSE
 \begin{equation}
@@ -657,7 +657,7 @@ However we can see that the settling MSE is higher for the faster convergence. T
 clearly demostrates the important consideration when selecting step-size; an increased step-size provides
 faster convergence at the cost of increased misadjustment.
 \subsection{Comparison of Normalized LMS and Standard LMS}
-The final experiment studies the performance of the Standard LMS agianst the Normalized LMS. Two instanes of the
+The final experiment studies the performance of the Standard LMS agianst the Normalized LMS. Two instances of the
 Standard LMS with values of $\mu = 0.025, 0.075$ are tested alongside the Normalized LMS. The normalized algorithm has the
 benefit of having a time-varying step size:
 $$\mu(n) = \dfrac{1}{\boldsymbol{u}^T(n)\boldsymbol{u}(n)}$$
@@ -700,14 +700,21 @@ End n loop\\
 \begin{equation}
   \boldsymbol{P}(n)= \lambda^{-1}[\boldsymbol{P}(n-1)-\boldsymbol{K}(n)\boldsymbol{u}^T(n)\boldsymbol{P}(n-1)]
 \end{equation}
-\textbf{Step 5:} Average error for MSE calculation\\
+\textbf{Step 5:} Add squared error for MSE calculation\\
 End k loop\\
 \textbf{Step 6:} Calculate MSE
 \begin{equation}
   \label{eq:MSE}
   MSE=\dfrac{1}{K}\sum_{k=1}^{K}e_k^2(n); \qquad n = 1,2,....N
 \end{equation}
-\subsubsection{Effect of Eigenvalue Spread}
+\subsection{Effect of Eigenvalue Spread}
+
+The same experiment that was performed in the LMS project to observe the RLS' ability to
+converge across increasing eigenvalue spread. As is shown in Figure ~\ref{fig:eigenspread2},
+the RLS algorithim's convergence speed is not effected by eigenvalue spread. All four channels converge
+within roughly 25 iterations of the N loop. This is in stark contrast to the LMS algorithm which
+required over 100 iterations to converge even with a large step size. However, the misadjustment is still dependent on
+the level of dispersion in the channel as the mean square error settles at a larger value for each consecutive channel.
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}
@@ -715,17 +722,21 @@ End k loop\\
   \caption{Effect of Eigenvalue Spread}
     \label{fig:eigenspread2}
 \end{figure}
-
-\subsubsection{Effect of Filter Order}
+\subsection{Effect of Filter Order}
+Now that we've learned that the RLS convergence is robust against eigenvalue spread
+and that the step size parameter is non-existent, we would expect the algorithm to
+converge even with a high filter order. This is demonstrated in Figure ~\ref{filterorder2}. As opposed to the
+LMS algorithm which diverged for $ M = 21$, the RLS is able to track the signal. The plot is offset because
+a larger delay is required for a larger filter order so it takes time for it to propagate throught the system.
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}
   \includegraphics[width=0.55\textwidth, inner] {Plots/Project2_filterorder.jpg}
   \caption{Effect of Filter Order}
-    \label{fig:filterorder}
+    \label{fig:filterorder2}
 \end{figure}
 
-\subsubsection{Tap-Weight Analysis}
+\subsection{Tap-Weight Analysis}
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}
