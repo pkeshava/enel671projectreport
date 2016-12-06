@@ -568,21 +568,37 @@ The LMS algorithm implements a search method to iteratively update the
 filter tap weights to find an optimal solution.
 
 The mean squared error is defined by:
-$$\boldsymbol{J}(n) = \sigma^2_d - 2\boldsymbol{w}^T\boldsymbol{p} + \boldsymbol{w}^T\boldsymbol{R}\boldsymbol{w}$$
-
-where
-$$\sigma^2_d$$ is the deterministic variance and the tap weight vector is
+$$\boldsymbol{J}(n) = \sigma^2_d - 2\boldsymbol{w}^T\boldsymbol{p} + \boldsymbol{w}^T\boldsymbol{R}\boldsymbol{w}$$ where
+$\sigma^2_d$ is the constant deterministic variance and the tap-weight vector is
 $$ \boldsymbol{w}(n)= \boldsymbol{w}(n-1)+\mu\boldsymbol{u}(n)e(n)$$
 The filter output which is the tap-weight vector multipled by the tap input vector
 $$\hat{d}(n) = y(n) = \boldsymbol{w}^T(n)\boldsymbol{u}(n) = \boldsymbol{u}^T(n)\boldsymbol{w}(n)$$
 Intuitively the error of the filter is simply the is the estimate subtracted from the desired signal.
 $$e(n) = d(n) - \hat{d}(n) = d(n) - \boldsymbol{w}^T\boldsymbol{u}(n)$$
-Which in the context of this project is the randomly generated BPSK signal.
-\subsection{Effect of Eigenvalue Spread}
-The LMS algorithm was run with total K = 500 iterations and the error for each value of the tap input vector n = 1,2,...N was averaged. The error was then used to calculate the mean
-square error using the formula:
+Which in the context of this project is the randomly generated BPSK signal, $a(n)$. The summary of the implemented LMS algorithm is as follows:\\
+\\
+\textbf{Step 1:} $\boldsymbol{w}(0) = \boldsymbol{0} $\\
+\textbf{Step 2:}\\
+For $k = 1:K$\\
+and,\\
+For $n = 1:N$\\
+(i.e. for each value of the input sequence $u(n), n = 1,2,...N,$)
+\\ \indent form the tap-input vector $\boldsymbol{u}(n)$ and compute the filter output:
+$$ y(n) = \boldsymbol{w}^T(n-1)\boldsymbol{u}(n)$$
+\indent \textbf{Step 3:} Compute the error:
+$$ e(n) = d(n) - \hat{d}(n) $$
+\indent \textbf{Step 4:} Update tap-weight vector:
+$$ \boldsymbol{w}(n)= \boldsymbol{w}(n-1)+\mu\boldsymbol{u}(n)e(n)$$
+End n loop\\
+\textbf{Step 5:} Average error for MSE calculation\\
+End k loop\\
+\textbf{Step 6:} Calculate MSE
 $$MSE=\dfrac{1}{K}\sum_{k=1}^{K}e_k^2(n); \qquad n = 1,2,....N$$
-This is known as the learning curve of the algorithm. The learning curve is used to judge the
+
+
+\subsection{Effect of Eigenvalue Spread}
+The LMS algorithm was run with total K = 500 iterations and the error for each value of the tap-input vector n = FILL IN was averaged.
+This MSE is calculated using REF EQN. This is know as the learning curve and it is used to judge the
 performance of each experiment.The results for the eigenvalue spread experiment are shown in Figure~\ref{fig:eigenspread}
 \begin{figure}[H]
   \centering
@@ -591,8 +607,10 @@ performance of each experiment.The results for the eigenvalue spread experiment 
   \caption{Learning Curves for Different Channels}
     \label{fig:eigenspread}
 \end{figure}
-These results show that the LMS is very suceptible to eigenvalue spread
-
+These results show that the LMS is very susceptible to eigenvalue spread. Each channel,
+which has progressively more distortion, has an increased convergence rate and the mean square
+error settles at a higher value. It is shown that the LMS is not capable of
+removing the distortion from channel four.
 \subsection{Effect of Filter Order}
 \begin{figure}[H]
   \centering
@@ -601,8 +619,15 @@ These results show that the LMS is very suceptible to eigenvalue spread
   \caption{Learning Curves with Varying Filter Order}
     \label{fig:filterorder1}
 \end{figure}
-
+This reinforces the notion that the misadjustment
+of the LMS filter increases as the filter order increases [REF]. While the speed of convergence
+generally decreases with increased filter order [REF], it typically increases the eigenvalue spread
+because the input autocorrelation matrix, $\boldsymbol{R}$, has larger dimensions. Therefore it becomes difficult to
+choose a step-size,$\mu$, that will converge for a large filter order.
+This divergence is demonstrated in Figure ~\ref{fig:filterorder1}
+\vspace{-10mm}
 \subsection{Analysis of Step Size Parameter}
+\vspace{-5mm}
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}
@@ -638,7 +663,7 @@ These results show that the LMS is very suceptible to eigenvalue spread
   \centering
   \captionsetup{justification=centering}
   \includegraphics[width=0.55\textwidth, inner] {Plots/Project2_filterorder.jpg}
-  \caption{Effect of Eigenvalue Spread}
+  \caption{Effect of Filter Order}
     \label{fig:filterorder}
 \end{figure}
 
@@ -647,7 +672,7 @@ These results show that the LMS is very suceptible to eigenvalue spread
   \centering
   \captionsetup{justification=centering}
   \includegraphics[width=0.55\textwidth, inner] {Plots/Project2_weights.jpg}
-  \caption{Effect of Filter Order}
+  \caption{Stem Plot of Steady-State Tap-Weights}
     \label{fig:weights}
 \end{figure}
 
@@ -655,7 +680,7 @@ These results show that the LMS is very suceptible to eigenvalue spread
   \centering
   \captionsetup{justification=centering}
   \includegraphics[width=0.55\textwidth, inner] {Plots/Project2_w6.jpg}
-  \caption{Stem Plot of Steady-State Tap-Weights}
+  \caption{Center Tap Weight, $w_6$}
     \label{fig:w6}
 \end{figure}
 
@@ -663,7 +688,7 @@ These results show that the LMS is very suceptible to eigenvalue spread
   \centering
   \captionsetup{justification=centering}
   \includegraphics[width=0.55\textwidth, inner] {Plots/Project2_MagnitudeSpectrum.jpg}
-  \caption{Center Tap Weight, $w_6$}
+  \caption{Magnitdue Spectra of Equalizer}
     \label{fig:magspec}
 \end{figure}
 % An example of a floating figure using the graphicx package.
