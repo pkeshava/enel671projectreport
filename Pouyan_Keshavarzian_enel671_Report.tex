@@ -584,21 +584,28 @@ and,\\
 For $n = 1:N$\\
 (i.e. for each value of the input sequence $u(n), n = 1,2,...N,$)
 \\ \indent form the tap-input vector $\boldsymbol{u}(n)$ and compute the filter output:
-$$ y(n) = \boldsymbol{w}^T(n-1)\boldsymbol{u}(n)$$
+\begin{equation}
+  y(n) = \boldsymbol{w}^T(n-1)\boldsymbol{u}(n)
+\end{equation}
 \indent \textbf{Step 3:} Compute the error:
-$$ e(n) = d(n) - \hat{d}(n) $$
+\begin{equation}
+  e(n) = d(n) - \hat{d}(n)
+\end{equation}
 \indent \textbf{Step 4:} Update tap-weight vector:
-$$ \boldsymbol{w}(n)= \boldsymbol{w}(n-1)+\mu\boldsymbol{u}(n)e(n)$$
+\begin{equation}
+  \boldsymbol{w}(n)= \boldsymbol{w}(n-1)+\mu\boldsymbol{u}(n)e(n)
+\end{equation}
 End n loop\\
 \textbf{Step 5:} Average error for MSE calculation\\
 End k loop\\
 \textbf{Step 6:} Calculate MSE
-$$MSE=\dfrac{1}{K}\sum_{k=1}^{K}e_k^2(n); \qquad n = 1,2,....N$$
-
-
+\begin{equation}
+  \label{eq:MSE}
+  MSE=\dfrac{1}{K}\sum_{k=1}^{K}e_k^2(n); \qquad n = 1,2,....N
+\end{equation}
 \subsection{Effect of Eigenvalue Spread}
-The LMS algorithm was run with total K = 500 iterations and the error for each value of the tap-input vector n = FILL IN was averaged.
-This MSE is calculated using REF EQN. This is know as the learning curve and it is used to judge the
+The LMS algorithm was run with total K = 500 iterations and the error for each value of the tap-input vector N = 600 was averaged.
+This MSE is calculated using Equation ~\ref{eq:MSE}. This is known as the learning curve and it is used to judge the
 performance of each experiment.The results for the eigenvalue spread experiment are shown in Figure~\ref{fig:eigenspread}
 \begin{figure}[H]
   \centering
@@ -611,6 +618,7 @@ These results show that the LMS is very susceptible to eigenvalue spread. Each c
 which has progressively more distortion, has an increased convergence rate and the mean square
 error settles at a higher value. It is shown that the LMS is not capable of
 removing the distortion from channel four.
+
 \subsection{Effect of Filter Order}
 \begin{figure}[H]
   \centering
@@ -641,7 +649,7 @@ convergence time. This is demonstrated by the convergence speed formula:
 $$ \tau = \dfrac{1}{\mu\lambda}$$ However, there are a couple things to keep in mind. First, a
 step-size which is smaller than the maximum value is required. That is:
 $$2 < \mu < \dfrac{2}{\lambda_{max}}$$
-which for our purposes is:
+which is defined for the second channel as:
 $\mu = \dfrac{2}{2.3752} \approx 0.84$
 \\
 \\
@@ -667,6 +675,38 @@ optimize for convergence speed. This concept is demonstrated in Figure ~\ref{fig
 %\IEEEpubidadjcol
 
 \section{Project 2: Recursive Least Squares Algorithm}
+The summary of the implemented RLS algorithm is as follows:\\
+\\
+\textbf{Step 1:} Initialize the weight vector and the inverse correlation matrix
+$\boldsymbol{w}(0) = \boldsymbol{0},  \boldsymbol{P}(0) \delta^{-1}\boldsymbol{I}$\\
+\textbf{Step 2:}\\
+For $k = 1:K$\\
+and,\\
+For $n = 1:N$\\
+(i.e. for each value of the input sequence $u(n), n = 1,2,...N,$)
+\\ \indent compute the Kalman gain vector
+\begin{equation}
+  \boldsymbol{K}(n)= \dfrac{\boldsymbol{P}(n-1)\boldsymbol{u}(n)}{\lambda+\boldsymbol{u}^T(n)\boldsymbol{P}(n-1)\boldsymbol{u}(n)}
+\end{equation}
+\indent \textbf{Step 3:} Compute the a priori error and update the weight vector:
+\begin{equation}
+  \alpha(n) = d(n) - \boldsymbol{u}(n)\boldsymbol{w}(n-1)
+\end{equation}
+\begin{equation}
+  \boldsymbol{w}(n)= \boldsymbol{w}(n-1)+\boldsymbol{K}(n)\alpha(n)
+\end{equation}
+End n loop\\
+\indent \textbf{Step 4:} Update the inverse correlation matrix
+\begin{equation}
+  \boldsymbol{P}(n)= \lambda^{-1}[\boldsymbol{P}(n-1)-\boldsymbol{K}(n)\boldsymbol{u}^T(n)\boldsymbol{P}(n-1)]
+\end{equation}
+\textbf{Step 5:} Average error for MSE calculation\\
+End k loop\\
+\textbf{Step 6:} Calculate MSE
+\begin{equation}
+  \label{eq:MSE}
+  MSE=\dfrac{1}{K}\sum_{k=1}^{K}e_k^2(n); \qquad n = 1,2,....N
+\end{equation}
 \subsubsection{Effect of Eigenvalue Spread}
 \begin{figure}[H]
   \centering
