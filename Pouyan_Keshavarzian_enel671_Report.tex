@@ -603,7 +603,7 @@ performance of each experiment.The results for the eigenvalue spread experiment 
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}
-  \includegraphics[width=0.55\textwidth, inner] {Plots/Project1_Part1_2.jpg}
+  \includegraphics[width=0.55\textwidth, right] {Plots/Project1_Part1_2.jpg}
   \caption{Learning Curves for Different Channels}
     \label{fig:eigenspread}
 \end{figure}
@@ -615,7 +615,7 @@ removing the distortion from channel four.
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}
-  \includegraphics[width=0.55\textwidth, inner] {Plots/Project1_Part3.jpg}
+  \includegraphics[width=0.55\textwidth, right] {Plots/Project1_Part3.jpg}
   \caption{Learning Curves with Varying Filter Order}
     \label{fig:filterorder1}
 \end{figure}
@@ -623,9 +623,10 @@ This reinforces the notion that the misadjustment
 of the LMS filter increases as the filter order increases [REF]. While the speed of convergence
 generally decreases with increased filter order [REF], it typically increases the eigenvalue spread
 because the input autocorrelation matrix, $\boldsymbol{R}$, has larger dimensions. Therefore it becomes difficult to
-choose a step-size,$\mu$, that will converge for a large filter order.
+choose a step-size, $\mu$, that will converge for a large filter order. The problem can be fixed by changing the
+step size parameter to a more suitable value such as $ \mu = 0.0375$.
 This divergence is demonstrated in Figure ~\ref{fig:filterorder1}
-\vspace{-10mm}
+%\vspace{-5mm}
 \subsection{Analysis of Step Size Parameter}
 \vspace{-5mm}
 \begin{figure}[H]
@@ -635,12 +636,29 @@ This divergence is demonstrated in Figure ~\ref{fig:filterorder1}
   \caption{Learning Curves of Varying Step Size Parameters}
     \label{fig:stepsize}
 \end{figure}
-
+As previously discussed, increasing the step-size parameter will decrease the
+convergence time. This is demonstrated by the convergence speed formula:
+$$ \tau = \dfrac{1}{\mu\lambda}$$ However, there are a couple things to keep in mind. First, a
+step-size which is smaller than the maximum value is required. That is:
+$$2 < \mu < \dfrac{2}{\lambda_{max}}$$
+which for our purposes is:
+$\mu = \dfrac{2}{2.3752} \approx 0.84$
+\\
+\\
+However we can see that the settling MSE is higher for the faster convergence. Therefore the learning curve
+clearly demostrates the important consideration when selecting step-size; an increased step-size provides
+faster convergence at the cost of increased misadjustment.
 \subsection{Comparison of Normalized LMS and Standard LMS}
+The final experiment studies the performance of the Standard LMS agianst the Normalized LMS. Two instanes of the
+Standard LMS with values of $\mu = 0.025, 0.075$ are tested alongside the Normalized LMS. The normalized algorithm has the
+benefit of having a time-varying step size:
+$$\mu(n) = \dfrac{1}{\boldsymbol{u}^T(n)\boldsymbol{u}(n)}$$
+This solves stability issues with in certain applications [REF HAYKIN]. The drawback being that you can no longer
+optimize for convergence speed. This concept is demonstrated in Figure ~\ref{fig:normalizedlms}
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}
-  \includegraphics[width=0.55\textwidth, inner] {Plots/Project1_Part5.jpg}
+  \includegraphics[width=0.55\textwidth, right] {Plots/Project1_Part5.jpg}
   \caption{Learning Curves of Standard and Normalized LMS Algorithms}
     \label{fig:normalizedlms}
 \end{figure}
