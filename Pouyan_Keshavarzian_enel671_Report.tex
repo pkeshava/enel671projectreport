@@ -462,8 +462,8 @@ experiment.
 \section{Equalization Methodology}
 \begin{figure*}
   \centering
-  \captionsetup{justification=centering}
-  \includegraphics[width=0.90\textwidth] {Plots/BlockDiagram}
+  \captionsetup{justification=centering,font = small}
+  \includegraphics[width=0.85\textwidth] {Plots/BlockDiagram}
   \caption{Block Diagram for Equalization}
     \label{fig:BLOCK}
 \end{figure*}
@@ -476,7 +476,7 @@ Before the specifics of this block diagram is discussed a few general principles
 Wiener filter theory will be discussed. The aurocorrelation matrix is defined as
 $$\boldsymbol{R} = E[\boldsymbol{u}(n)\boldsymbol{u}(n)^T] $$
 \\
-and the autocovariance:
+and the cross-correlation:
 $$\boldsymbol{p} = E[\boldsymbol{u}(n)d(n)]$$
 
 it can be shown from REF that the Wiener-Hopf or Normal Equation can be solved for
@@ -496,6 +496,7 @@ where  \textbf{h} is known as the channel impulse response. The impulse response
 with varying distortion are defined as
 \begin{table}[H]
 \centering
+\captionsetup{font = small}
  \begin{tabular}{ | c || c | c | c |}
     \hline
     Channel & $\boldsymbol{h}_1$ & $\boldsymbol{h}_2$ & $\boldsymbol{h}_3$\\
@@ -514,12 +515,12 @@ with varying distortion are defined as
 \end{table}
 To compare the output of the filter to the truth data source adequate delay must be added to the BPSK data. The optimal delay is given by
 half the filter order, that is:
-$$\Delta = \dfrac{M}{2}$$
+$$\Delta = \dfrac{M+1}{2}$$
 \section{Pre Experiment Calculations}
 From analysis we are given that the input autocorrelation matrix has
 a quintdiagonal structure of the form given by:\\
 \[
-\boldsymbol{R}=
+\boldsymbol{R_{input}}=
     \begin{bsmallmatrix}
     r(0) & r(1) & r(2) & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
     r(1) & r(0) & r(1) & r(2) & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
@@ -535,14 +536,20 @@ a quintdiagonal structure of the form given by:\\
   \end{bsmallmatrix}
 \]
 \\
-$$  r(0) = h_1^2 + h_2^2 + h_3^2 $$
-$$  r(1) = h_1h_2 + h_2h_3 $$
+$$  r(0) = h_1^2 + h_2^2 + h_3^2, \qquad  r(1) = h_1h_2 + h_2h_3 $$
 $$  r(2) = h_1h_3 $$
 using the equations given the input autocorelation matrix and can be evaluated
-for each channel. The eigenvalue spreads for each channel are shown in Table ~\ref{table:eigenspread}
+for each channel.
+The eigenvalues are calculated using the autocorrelation matrix with noise of $ \sigma^2 = 0.0001$.
+The autocorrelation of the noise matrix is simply a diagonal matrix of the variance denoted by, $\boldsymbol{R}_v$ and the overall
+autocorrelation with noise is defined as:
+$$ \boldsymbol{R} = \boldsymbol{R}_{input} + \boldsymbol{R}_v$$
+
+The values for comparison are shon in Tables ~\ref{table:eigenspreadn}
 \linespread{0.8}
 \begin{table}[H]
   \centering
+  \captionsetup{font = small}
  \begin{tabular}{ | c || p{1.5cm} | p{1.5cm} | p{1.5cm} |}
     \hline
     Channel & Min Eigenvalue, $\lambda_{min}$  & Max Eigenvalue, $\lambda_{max}$ & Eigenvalue Spread $\chi = \lambda_{max}/\lambda_{min}$\\
@@ -556,16 +563,17 @@ for each channel. The eigenvalue spreads for each channel are shown in Table ~\r
     4 & 0.0647 & 3.0695 & 47.4274 \\
     \hline
   \end{tabular}
-  \caption{Pre-Experiment Calculations}
-  \label{table:eigenspread}
+  \caption{Eigenvalues With Noise}
+  \label{table:eigenspreadn}
 \end{table}
+
 
 As is shown, each channel has progressively worse eigenvalue spread. The effect
 of this on certain algorithms will be discussed in the following sections
 
 \section{Project 1: Least Mean Squares Algorithm}
 The LMS algorithm implements a search method to iteratively update the
-filter tap weights to find an optimal solution.
+filter tap weights to find a solution that minimizes the mean square error.
 
 The mean squared error is defined by:
 $$\boldsymbol{J}(n) = \sigma^2_d - 2\boldsymbol{w}^T\boldsymbol{p} + \boldsymbol{w}^T\boldsymbol{R}\boldsymbol{w}$$ where
@@ -573,7 +581,7 @@ $\sigma^2_d$ is the constant deterministic variance and the tap-weight vector is
 $$ \boldsymbol{w}(n)= \boldsymbol{w}(n-1)+\mu\boldsymbol{u}(n)e(n)$$
 The filter output which is the tap-weight vector multipled by the tap input vector
 $$\hat{d}(n) = y(n) = \boldsymbol{w}^T(n)\boldsymbol{u}(n) = \boldsymbol{u}^T(n)\boldsymbol{w}(n)$$
-Intuitively the error of the filter is simply the is the estimate subtracted from the desired signal.
+Intuitively the error of the filter is simply the estimate subtracted from the desired signal.
 $$e(n) = d(n) - \hat{d}(n) = d(n) - \boldsymbol{w}^T\boldsymbol{u}(n)$$
 Which in the context of this project is the randomly generated BPSK signal, $a(n)$. The summary of the implemented LMS algorithm is as follows:\\
 \\
@@ -607,9 +615,11 @@ End k loop\\
 The LMS algorithm was run with total K = 500 iterations and the error for each value of the tap-input vector N = 600 was averaged.
 This MSE is calculated using Equation ~\ref{eq:MSE}. This is known as the learning curve and it is used to judge the
 performance of each experiment.The results for the eigenvalue spread experiment are shown in Figure~\ref{fig:eigenspread}
+The experiment was run with $M = 11, \quad and \quad SNR = 40dB$.
+
 \begin{figure}[H]
   \centering
-  \captionsetup{justification=centering}
+  \captionsetup{justification=centering,font = small}
   \includegraphics[width=0.55\textwidth, right] {Plots/Project1_Part1_2.jpg}
   \caption{Learning Curves for Different Channels}
     \label{fig:eigenspread}
@@ -622,16 +632,21 @@ removing the distortion from channel four.
 \subsection{Effect of Filter Order}
 \begin{figure}[H]
   \centering
-  \captionsetup{justification=centering}
+  \captionsetup{justification=centering,font = small}
   \includegraphics[width=0.55\textwidth, right] {Plots/Project1_Part3.jpg}
-  \caption{Learning Curves with Varying Filter Order}
+  \caption{Channel 2 Learning Curves with Varying Filter Order}
     \label{fig:filterorder1}
 \end{figure}
-This reinforces the notion that the misadjustment
-of the LMS filter increases as the filter order increases [REF]. While the speed of convergence
+Figure ~\ref{fig:filterorder1} reinforces the notion that the misadjustment
+of the LMS filter increases as the filter order increases [REF]. The parameters for this run were $M = 9, 11, 21, \quad and \quad SNR = 40dB
+\quad \mu = 0.075 \quad and \quad N = 600$. While the speed of convergence
 generally decreases with increased filter order [REF], it typically increases the eigenvalue spread
 because the input autocorrelation matrix, $\boldsymbol{R}$, has larger dimensions. Therefore it becomes difficult to
-choose a step-size, $\mu$, that will converge for a large filter order. The problem can be fixed by changing the
+choose a step-size, $\mu$, that will converge for a large filter order.
+$$0 < \mu < \dfrac{2}{tr[\boldsymbol{R}]} = \mu < \dfrac{2}{Mr(0)}  = \dfrac{2}{M(r(0) = h_1^2 + h_2^2 + h_3^2 + \sigma^2_v)} $$
+Which for the second channel and a filter order of 21 is
+$\mu = \dfrac{2}{2.3752} \approx 0.082$. The value of 0.075 is very close to this limit and we can see the divergence as expected.
+The problem can be fixed by changing the
 step size parameter to a more suitable value such as $ \mu = 0.0375$.
 This divergence is demonstrated in Figure ~\ref{fig:filterorder1}
 %\vspace{-5mm}
@@ -639,7 +654,7 @@ This divergence is demonstrated in Figure ~\ref{fig:filterorder1}
 \vspace{-5mm}
 \begin{figure}[H]
   \centering
-  \captionsetup{justification=centering}
+  \captionsetup{justification=centering,font = small}
   \includegraphics[width=0.55\textwidth, inner] {Plots/Project1_Part4.jpg}
   \caption{Learning Curves of Varying Step Size Parameters}
     \label{fig:stepsize}
@@ -647,25 +662,22 @@ This divergence is demonstrated in Figure ~\ref{fig:filterorder1}
 As previously discussed, increasing the step-size parameter will decrease the
 convergence time. This is demonstrated by the convergence speed formula:
 $$ \tau = \dfrac{1}{\mu\lambda}$$ However, there are a couple things to keep in mind. First, a
-step-size which is smaller than the maximum value is required. That is:
-$$2 < \mu < \dfrac{2}{\lambda_{max}}$$
-which is defined for the second channel as:
-$\mu = \dfrac{2}{2.3752} \approx 0.84$
+step-size which is smaller than the maximum value is required. This must meet the condtions outlined in the previous section.
 \\
 \\
 However we can see that the settling MSE is higher for the faster convergence. Therefore the learning curve
 clearly demostrates the important consideration when selecting step-size; an increased step-size provides
 faster convergence at the cost of increased misadjustment.
 \subsection{Comparison of Normalized LMS and Standard LMS}
-The final experiment studies the performance of the Standard LMS agianst the Normalized LMS. Two instances of the
+The final experiment studies the performance of the Standard LMS against the Normalized LMS. Two instances of the
 Standard LMS with values of $\mu = 0.025, 0.075$ are tested alongside the Normalized LMS. The normalized algorithm has the
 benefit of having a time-varying step size:
 $$\mu(n) = \dfrac{1}{\boldsymbol{u}^T(n)\boldsymbol{u}(n)}$$
-This solves stability issues with in certain applications [REF HAYKIN]. The drawback being that you can no longer
+This solves stability issues with certain applications [REF HAYKIN]. The drawback being that you can no longer
 optimize for convergence speed. This concept is demonstrated in Figure ~\ref{fig:normalizedlms}
 \begin{figure}[H]
   \centering
-  \captionsetup{justification=centering}
+  \captionsetup{justification=centering,font = small}
   \includegraphics[width=0.55\textwidth, right] {Plots/Project1_Part5.jpg}
   \caption{Learning Curves of Standard and Normalized LMS Algorithms}
     \label{fig:normalizedlms}
@@ -708,16 +720,17 @@ End k loop\\
   MSE=\dfrac{1}{K}\sum_{k=1}^{K}e_k^2(n); \qquad n = 1,2,....N
 \end{equation}
 \subsection{Effect of Eigenvalue Spread}
-
 The same experiment that was performed in the LMS project to observe the RLS' ability to
 converge across increasing eigenvalue spread. As is shown in Figure ~\ref{fig:eigenspread2},
 the RLS algorithim's convergence speed is not effected by eigenvalue spread. All four channels converge
 within roughly 25 iterations of the N loop. This is in stark contrast to the LMS algorithm which
 required over 100 iterations to converge even with a large step size. However, the misadjustment is still dependent on
-the level of dispersion in the channel as the mean square error settles at a larger value for each consecutive channel.
+the level of dispersion in the channel as the mean square error settles at a larger value for each consecutive channel. The experiment was run
+with $M = 11, \qquad \delta = 0.01 \qquad SNR = 40dB$ where,  $\delta$ is a parameter is for implementation
+to avoid division by zero errors.
 \begin{figure}[H]
   \centering
-  \captionsetup{justification=centering}
+  \captionsetup{justification=centering,font = small}
   \includegraphics[width=0.55\textwidth, inner] {Plots/Project2_eigenspread.jpg}
   \caption{Effect of Eigenvalue Spread}
     \label{fig:eigenspread2}
@@ -725,12 +738,12 @@ the level of dispersion in the channel as the mean square error settles at a lar
 \subsection{Effect of Filter Order}
 Now that we've learned that the RLS convergence is robust against eigenvalue spread
 and that the step size parameter is non-existent, we would expect the algorithm to
-converge even with a high filter order. This is demonstrated in Figure ~\ref{filterorder2}. As opposed to the
+converge even with a high filter order. This is demonstrated in Figure ~\ref{fig:filterorder2}. As opposed to the
 LMS algorithm which diverged for $ M = 21$, the RLS is able to track the signal. The plot is offset because
 a larger delay is required for a larger filter order so it takes time for it to propagate throught the system.
 \begin{figure}[H]
   \centering
-  \captionsetup{justification=centering}
+  \captionsetup{justification=centering,font = small}
   \includegraphics[width=0.55\textwidth, inner] {Plots/Project2_filterorder.jpg}
   \caption{Effect of Filter Order}
     \label{fig:filterorder2}
@@ -739,7 +752,7 @@ a larger delay is required for a larger filter order so it takes time for it to 
 \subsection{Tap-Weight Analysis}
 \begin{figure}[H]
   \centering
-  \captionsetup{justification=centering}
+  \captionsetup{justification=centering,font = small}
   \includegraphics[width=0.55\textwidth, inner] {Plots/Project2_weights.jpg}
   \caption{Stem Plot of Steady-State Tap-Weights}
     \label{fig:weights}
@@ -747,7 +760,7 @@ a larger delay is required for a larger filter order so it takes time for it to 
 
 \begin{figure}[H]
   \centering
-  \captionsetup{justification=centering}
+  \captionsetup{justification=centering,font = small}
   \includegraphics[width=0.55\textwidth, inner] {Plots/Project2_w6.jpg}
   \caption{Center Tap Weight, $w_6$}
     \label{fig:w6}
@@ -755,11 +768,54 @@ a larger delay is required for a larger filter order so it takes time for it to 
 
 \begin{figure}[H]
   \centering
-  \captionsetup{justification=centering}
+  \captionsetup{justification=centering,font = small}
   \includegraphics[width=0.55\textwidth, inner] {Plots/Project2_MagnitudeSpectrum.jpg}
   \caption{Magnitdue Spectra of Equalizer}
     \label{fig:magspec}
 \end{figure}
+
+\section{Project 3: Recursive Least Squares Lattice}
+
+\begin{figure}[H]
+  \centering
+  \captionsetup{justification=centering,font = small}
+  \includegraphics[width=0.55\textwidth, inner] {Plots/Project3_MSEE.jpg}
+  \caption{A Posteriori Mean Square Erro}
+    \label{fig:MSEEp}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \captionsetup{justification=centering,font = small}
+  \includegraphics[width=0.55\textwidth, inner] {Plots/Project3_LIKLIHOOD.jpg}
+  \caption{Liklihood Parameter, $\gamma_m$}
+    \label{fig:liklihood}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \captionsetup{justification=centering,font = small}
+  \includegraphics[width=0.55\textwidth, inner] {Plots/Project3_GAMMA_F.jpg}
+  \caption{Forward Reflection Coefficient}
+    \label{fig:gammaf}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \captionsetup{justification=centering,font = small}
+  \includegraphics[width=0.55\textwidth, inner] {Plots/Project3_GAMMA_B.jpg}
+  \caption{Backward Reflection Coefficient}
+    \label{fig:gammab}
+
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \captionsetup{justification=centering,font = small}
+  \includegraphics[width=0.55\textwidth, inner] {Plots/Project3_STEM.jpg}
+  \caption{Regression Coefficients}
+    \label{fig:regcoeff}
+\end{figure}
+
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
 % For figures, \caption should occur after the \includegraphics.
