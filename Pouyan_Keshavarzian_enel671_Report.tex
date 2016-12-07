@@ -726,7 +726,7 @@ the RLS algorithim's convergence speed is not effected by eigenvalue spread. All
 within roughly 25 iterations of the N loop. This is in stark contrast to the LMS algorithm which
 required over 100 iterations to converge even with a large step size. However, the misadjustment is still dependent on
 the level of dispersion in the channel as the mean square error settles at a larger value for each consecutive channel. The experiment was run
-with $M = 11, \qquad \delta = 0.01 \qquad SNR = 40dB$ where,  $\delta$ is a parameter is for implementation
+with $M = 11, \quad \delta = 0.01 \quad SNR = 40dB \quad N = 600$ where, $\delta$ is a parameter is for implementation
 to avoid division by zero errors.
 \begin{figure}[H]
   \centering
@@ -738,9 +738,11 @@ to avoid division by zero errors.
 \subsection{Effect of Filter Order}
 Now that we've learned that the RLS convergence is robust against eigenvalue spread
 and that the step size parameter is non-existent, we would expect the algorithm to
-converge even with a high filter order. This is demonstrated in Figure ~\ref{fig:filterorder2}. As opposed to the
-LMS algorithm which diverged for $ M = 21$, the RLS is able to track the signal. The plot is offset because
-a larger delay is required for a larger filter order so it takes time for it to propagate throught the system.
+converge even with a high filter order. For comparison with the LMS we now run the experiment with
+$M = 9, 11, 21, \quad \delta = 0.01 \quad SNR = 40dB \quad N = 600$. This is demonstrated in Figure ~\ref{fig:filterorder2}.
+As opposed to the LMS algorithm which diverged for $ M = 21$, the RLS is able to track the signal. The plot is offset because
+a larger delay is required for a larger filter order so it takes time for it to propagate through the system. Figure ~\ref{fig:filterorder2}
+proves our theory for convergence even with a high filter order.
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering,font = small}
@@ -750,6 +752,10 @@ a larger delay is required for a larger filter order so it takes time for it to 
 \end{figure}
 
 \subsection{Tap-Weight Analysis}
+Next we take a look at the tap-weight vectors for the steady-stae averaged RLS algorithm. Figure ~\ref{fig:weights} is a stem plot that shows all
+eleven tap values. The symmetry is shown around the center tap, $W_6$. This is intuitive when considering that the channel has even symmetry. $W_6$ is plotted in Figure
+~\ref{fig:w6} and it is seen that it reaches a steady-state value
+within 10 samples. The settled value is approximately 1.15.
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering,font = small}
@@ -757,7 +763,6 @@ a larger delay is required for a larger filter order so it takes time for it to 
   \caption{Stem Plot of Steady-State Tap-Weights}
     \label{fig:weights}
 \end{figure}
-
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering,font = small}
@@ -765,7 +770,9 @@ a larger delay is required for a larger filter order so it takes time for it to 
   \caption{Center Tap Weight, $w_6$}
     \label{fig:w6}
 \end{figure}
-
+The magnitude spectra of Channel 1's response, the adaptive filter, and the resulting equalized output
+are all plotted in Figure ~\ref{fig:magspec}. As is expected, the output of the filter is completely equalized and shows a flat response across
+frequency.
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering,font = small}
@@ -773,7 +780,17 @@ a larger delay is required for a larger filter order so it takes time for it to 
   \caption{Magnitdue Spectra of Equalizer}
     \label{fig:magspec}
 \end{figure}
-
+\subsection{Small SNR Analysis}
+Finally a comparison between the RLS and LMS with small $SNR = 10dB$ is shown in Figure ~\ref{fig:smallsnr}. Neither the RLS or LMS performs nearly as well
+as when the larger signal-to-noise ratio of $40dB$ was used. Their settling values for MSE are roughly 0.1 and 0.8 respectively as opposed to the previous values of roughly $10^{-4}$.
+This experiment gives us a good benchmark for understanding the constraints of the algorithm in a real world implementation. 
+\begin{figure}[H]
+  \centering
+  \captionsetup{justification=centering,font = small}
+  \includegraphics[width=0.55\textwidth, inner] {Plots/Project2_smallSNR.jpg}
+  \caption{RLS vd LMS Comparison using $SNR = 10dB$}
+    \label{fig:smallsnr}
+\end{figure}
 \section{Project 3: Recursive Least Squares Lattice}
 
 \begin{figure}[H]
