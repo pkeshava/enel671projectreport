@@ -1,0 +1,147 @@
+% $ biblatex auxiliary file $
+% $ biblatex version 2.5 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\entry{goldenberg1985digital}{article}{}
+  \name{author}{3}{}{%
+    {{}%
+     {Goldenberg}{G.}%
+     {LM}{L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Matiushkin}{M.}%
+     {BD}{B.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Poliak}{P.}%
+     {MN}{M.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{GLMBPM1}
+  \strng{fullhash}{GLMBPM1}
+  \field{title}{Digital signal processing: Handbook}
+  \field{volume}{1}
+  \field{journaltitle}{Moscow Izdatel Radio Sviaz}
+  \field{year}{1985}
+\endentry
+
+\entry{lecturenotes}{misc}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Sesay}{S.}%
+     {Abu~B}{A.~B.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{2}{%
+    {Department of Electrical}%
+    {Computer Engineering}%
+  }
+  \strng{namehash}{SAB1}
+  \strng{fullhash}{SAB1}
+  \field{title}{ENEL 671 Lecture Notes}
+  \field{year}{2016}
+\endentry
+
+\entry{haykin2008adaptive}{book}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Haykin}{H.}%
+     {Simon~S}{S.~S.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {Pearson Education India}%
+  }
+  \strng{namehash}{HSS1}
+  \strng{fullhash}{HSS1}
+  \field{title}{Adaptive filter theory}
+  \field{year}{2008}
+\endentry
+
+\entry{widrow1976stationary}{article}{}
+  \name{author}{4}{}{%
+    {{}%
+     {Widrow}{W.}%
+     {Bernard}{B.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {McCool}{M.}%
+     {John~M}{J.~M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Larimore}{L.}%
+     {Michael~G}{M.~G.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Johnson}{J.}%
+     {C~Richard}{C.~R.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {IEEE}%
+  }
+  \strng{namehash}{WBMJMLMG+1}
+  \strng{fullhash}{WBMJMLMGJCR1}
+  \field{number}{8}
+  \field{pages}{1151\bibrangedash 1162}
+  \field{title}{Stationary and nonstationary learning characteristics of the
+  LMS adaptive filter}
+  \field{volume}{64}
+  \field{journaltitle}{Proceedings of the IEEE}
+  \field{year}{1976}
+\endentry
+
+\entry{satorius1981application}{article}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Satorius}{S.}%
+     {E}{E}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Pack}{P.}%
+     {J}{J}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {IEEE}%
+  }
+  \strng{namehash}{SEPJ1}
+  \strng{fullhash}{SEPJ1}
+  \field{number}{2}
+  \field{pages}{136\bibrangedash 142}
+  \field{title}{Application of least squares lattice algorithms to adaptive
+  equalization}
+  \field{volume}{29}
+  \field{journaltitle}{IEEE Transactions on Communications}
+  \field{year}{1981}
+\endentry
+
+\lossort
+\endlossort
+
+\endinput

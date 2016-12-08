@@ -167,6 +167,8 @@
 \usepackage[export]{adjustbox}
 \usepackage{array}
 \usepackage{caption}
+\usepackage[backend=bibtex, firstinits=false, style=ieee]{biblatex}
+\addbibresource{Bibliog.bib}
 % *** MATH PACKAGES ***
 %
 % A popular package from the American Mathematical Society that provides
@@ -401,11 +403,11 @@ applications such as echo cancellation and beamforming, are implemented for
 the purposes of equalizing a dispersive channel. The first algorithm
 investigated is the Least Mean Squares (LMS). The LMS filter uses a search method to minimize the mean square error.
 The performance of the LMS is then compared to the Recursive Least Squares (RLS) method, which minimizes a weighted linear least squares cost funtion.
-Finally the Recursive Least Squares Lattice algorithm is implemented in the third project for joint process estimation.
+Finally the Recursive Least Squares Lattice (RLSL) algorithm is implemented in the third project for joint process estimation.
 The algorithms are tested against multiple channels with varying eigenvalue spreads. Furthermore
 different design parameters such as step size and filter order are evaluated.
-The performance with regards to convergence speed and complexity is discussed. The RLSL appears to have
-performance advantages in terms of convergence speed at the cost of significant increase in complexity.
+The performance with regards to convergence speed and complexity is discussed. The RLS and RLSL appear to have
+performance advantages in terms of convergence speed at the cost of increased complexity.
 \end{abstract}
 
 % Note that keywords are not normally used for peerreview papers.
@@ -439,15 +441,15 @@ performance advantages in terms of convergence speed at the cost of significant 
 % Here we have the typical use of a "T" for an initial drop letter
 % and "HIS" in caps to complete the first word.
 \IEEEPARstart{A}{daptive} filtering is used for a variety of applications. When communicating
-across a dispersive channel, a signal is destorted by effects of multipath, noise etc REFERENCE.
+across a dispersive channel, a signal is destorted by effects of multipath, noise, etc. \cite{goldenberg1985digital}.
 To recover the correct message at the receiver, an adaptive filter is implemented to equalize the channel. In general, an
 algorithm is used to calculate the optimum filter coefficients to minimize the error between transmit and receive. In practice, a
 signal transmitted along a channel contains a preamble, which is a known sequence of data that is used to esimate the parameters of the channel.
 The statistics are assumed to be stationary in the window of time that each preamble is sent. \\ \indent The most common adaptive equalizers involve
-the LMS, RLS, ans RLSL algorithms. The performance of these methods varies and they each have their advantages and drawbacks.
+the LMS, RLS, and RLSL algorithms. The performance of these methods varies and they each have their advantages and drawbacks.
 The LMS is relatively simplistic in terms of hardware/software resources. However, it's drawback is that it uses a stochastic search gradient
-and which limits its ability to find an optimum solution, is inefficient and not practically capable of removing all distortions. The RLS algorithm is typically an order of magnitude
-faster because it whitens the input data gy using the inverse correlation matrix of the data, assumed to be of zero mean REF. The RLSL
+which limits its ability to find an optimum solution, is inefficient and not practically capable of removing all distortions. The RLS algorithm is typically an order of magnitude
+faster because it whitens the input data by using the inverse correlation matrix of the data, assumed to be of zero mean \cite{lecturenotes}. The RLSL
 algorithm uses a lattice predictor along with a stage that estimates the error of the next filter order at each time step.\\
 \indent The methodology used for designing of the filters in this project will be discussed. Afterwards a detailed analysis of the results
 for each project and a summary of their implications will be discussed. Finally a conclusions section will highlight the general results drawn from each
@@ -464,7 +466,7 @@ experiment.
   \centering
   \captionsetup{justification=centering,font = small}
   \includegraphics[width=0.85\textwidth] {Plots/BlockDiagram}
-  \caption{Block Diagram for Equalization}
+  \caption{Block Diagram for Equalization \cite{lecturenotes}}
     \label{fig:BLOCK}
 \end{figure*}
 \IEEEPARstart{A}{daptive} equalization is designed to remove unwanted signals from
@@ -472,18 +474,18 @@ a channel output which can be caused by multipath or other distortions. In Figur
 general block diagram that is simulated in these experiments is outlined. A data source that
 generates a random BPSK signal goes through a dispersive channel that has three paths and white noise.
 The adaptive filter reduces the effects of these signal distortions to generate the output.
-Before the specifics of this block diagram is discussed a few general principles of
-Wiener filter theory will be discussed. The aurocorrelation matrix is defined as
+Before the specifics of this block diagram is discussed, a few general principles of
+Wiener filter theory will be presented. The autocorrelation matrix is defined as
 $$\boldsymbol{R} = E[\boldsymbol{u}(n)\boldsymbol{u}(n)^T] $$
 \\
 and the cross-correlation:
-$$\boldsymbol{p} = E[\boldsymbol{u}(n)d(n)]$$
+$$\boldsymbol{p} = E[\boldsymbol{u}(n)\boldsymbol{d}(n)]$$
 
-it can be shown from REF that the Wiener-Hopf or Normal Equation can be solved for
+it can be shown from \cite{haykin2008adaptive} that the Wiener-Hopf or Normal Equation can be solved for
 the optimum tap weights:
  $$\boldsymbol{Rw} = \boldsymbol{p}$$
-although this is computationaly wasteful and the matrix \textbf{R} may not
-always be invertable therefore adaptive algorithms are used to determine the tap weight vector.
+However, this is computationaly wasteful and the matrix \textbf{R} may not
+always be invertable, therefore adaptive algorithms are used to determine the tap weight vector.
 \[
 \boldsymbol{w} =\begin{bmatrix}w_0 & w_1 & ... & w_{M-1}\end{bmatrix}^T\\\mbox{}
 \]
@@ -513,7 +515,7 @@ with varying distortion are defined as
   \caption{Channel Parameters}
   \label{table:channel}
 \end{table}
-To compare the output of the filter to the truth data source adequate delay must be added to the BPSK data. The optimal delay is given by
+To compare the output of the filter to the truth data source, appropriate delay must be added to the BPSK data. The optimal delay is given by
 half the filter order, that is:
 $$\Delta = \dfrac{M+1}{2}$$
 \section{Pre Experiment Calculations}
@@ -573,7 +575,7 @@ of this on certain algorithms will be discussed in the following sections
 
 \section{Project 1: Least Mean Squares Algorithm}
 The LMS algorithm implements a search method to iteratively update the
-filter tap weights to find a solution that minimizes the mean square error.
+filter tap weights to find a solution that minimizes the mean square error\cite{widrow1976stationary}.
 
 The mean squared error is defined by:
 $$\boldsymbol{J}(n) = \sigma^2_d - 2\boldsymbol{w}^T\boldsymbol{p} + \boldsymbol{w}^T\boldsymbol{R}\boldsymbol{w}$$ where
@@ -673,7 +675,7 @@ The final experiment studies the performance of the Standard LMS against the Nor
 Standard LMS with values of $\mu = 0.025, 0.075$ are tested alongside the Normalized LMS. The normalized algorithm has the
 benefit of having a time-varying step size:
 $$\mu(n) = \dfrac{1}{\boldsymbol{u}^T(n)\boldsymbol{u}(n)}$$
-This solves stability issues with certain applications [REF HAYKIN]. The drawback being that you can no longer
+This solves stability issues with certain applications \cite{haykin2008adaptive}. The drawback being that you can no longer
 optimize for convergence speed. This concept is demonstrated in Figure ~\ref{fig:normalizedlms}
 \begin{figure}[H]
   \centering
@@ -819,7 +821,7 @@ shown in Figure ~\ref{fig:jointprocess}.
   \centering
   \captionsetup{justification=centering,font = small}
   \includegraphics[width=0.75\textwidth] {Plots/jointprocess}
-  \caption{Block Diagram for Joint Process Estimation}
+  \caption{Block Diagram for Joint Process Estimation \cite{lecturenotes}}
     \label{fig:jointprocess}
 \end{figure*}
 It is important to note that in Joint Process Estimation the prediction step starts at $ m = 1 $ and the estimation starts
@@ -888,7 +890,8 @@ End k loop\\
 The convergence behaviour of the RLSL is very similar to the RLS. Both algorithms converge in roughly the
 same amount of time steps and the RLSL is also able to equalize the fourth channel. The RLSL does seem to have a
 slight performance advantage over the RLS as the MSE is marginally lower. However, considering the complexity of the implementation
-and the hardware resource that would be required in real-time it is not practical to use this algorithm.
+and the hardware resource that would be required in real-time it is not practical to use this algorithm. In \cite{satorius1981application}, the potential benefits of using
+the RLSL method, such as insensitivity to quantization errors, is presented.
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering,font = small}
@@ -930,7 +933,7 @@ This is confirmed by Figure ~\ref{fig:likelihood}
 \end{figure}
 \subsection{Regression Coefficients}
 The regression coefficients for the implemented RLSL algorithm are shown in Figure ~\ref{fig:regcoeff}.
-These coefficients are used to estimate the output by doint a regression sum, that is:
+These coefficients are used to estimate the output by performing a regression sum, that is:
 \begin{equation}
   \label{eq:regsum}
   \hat{d}(n)= y(n) = \sum_{i=0}^{M}k_ib_i(n);
@@ -1051,7 +1054,7 @@ algorithm converges very quickly. This method is computationaly more complex tha
 on the requirements of the application it may not be required. The RLSL algorithm is by far the most complicated to implement.
 Careful analysis of parameters such as the likelihood factor need to be monitored to understand the performance. The mean square
 error of the RLSL was very marginally improved from the RLS with a very similar convergence speed. However, since a lattice
-structure is highly pipelined the implentation in VLSI is very practicle.
+structure is highly pipelined the implentation in VLSI is very practicle.\cite{widrow1976stationary}
 
 
 % if have a single appendix:
@@ -1068,14 +1071,14 @@ structure is highly pipelined the implentation in VLSI is very practicle.
 % starts a section numbered zero.)
 %
 
-\appendices
-\section{Proof of the First Zonklar Equation}
-Appendix one text goes here.
+%\appendices
+%\section{Proof of the First Zonklar Equation}
+%Appendix one text goes here.
 
 % you can choose not to have a title for an appendix
 % if you want by leaving the argument blank
-\section{}
-Appendix two text goes here.
+%\section{}
+%Appendix two text goes here.
 
 
 
@@ -1086,7 +1089,7 @@ Appendix two text goes here.
 \fi
 
 
-\normalsize
+
 % trigger a \newpage just before the given reference
 % number - used to balance the columns on the last page
 % adjust value as needed - may need to be readjusted if
@@ -1112,12 +1115,12 @@ Appendix two text goes here.
 %\begin{thebibliography}{1}
 %\cite{iso}
 
-%\section{References}
-%\printbibliography[heading=none]
+\section{References}
+\printbibliography[heading=none]
 %\bibitem{IEEEhowto:kopka}
 %A.~Sesay, \emph{Adaptive Signal Processing}, ENEL 671Lecture Notes. \hskip 1em plus
 %  0.5em minus 0.4em\relax Department of Electrical \& Computer Engineering, University of Calgary, 2016.
-
+\normalsize
 %\end{thebibliography}
 
 % biography section
