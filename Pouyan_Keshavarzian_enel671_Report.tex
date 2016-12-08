@@ -590,7 +590,7 @@ Which in the context of this project is the randomly generated BPSK signal, $a(n
 For $k = 1:K$\\
 and,\\
 For $n = 1:N$\\
-(i.e. for each value of the input sequence $u(n), n = 1,2,...N,$)
+(i.e. for each value of the input sequence $u(n), n = 1,2,...N$)
 \\ \indent form the tap-input vector $\boldsymbol{u}(n)$ and compute the filter output:
 \begin{equation}
   y(n) = \boldsymbol{w}^T(n-1)\boldsymbol{u}(n)
@@ -614,7 +614,7 @@ End k loop\\
 \subsection{Effect of Eigenvalue Spread}
 The LMS algorithm was run with total K = 500 iterations and the error for each value of the tap-input vector N = 600 was averaged.
 This MSE is calculated using Equation ~\ref{eq:MSE}. This is known as the learning curve and it is used to judge the
-performance of each experiment.The results for the eigenvalue spread experiment are shown in Figure~\ref{fig:eigenspread}
+performance of each experiment. The results for the eigenvalue spread experiment are shown in Figure~\ref{fig:eigenspread}.
 The experiment was run with $M = 11, \quad and \quad SNR = 40dB$.
 
 \begin{figure}[H]
@@ -638,17 +638,17 @@ removing the distortion from channel four.
     \label{fig:filterorder1}
 \end{figure}
 Figure ~\ref{fig:filterorder1} reinforces the notion that the misadjustment
-of the LMS filter increases as the filter order increases [REF]. The parameters for this run were $M = 9, 11, 21, \quad and \quad SNR = 40dB
+of the LMS filter increases as the filter order increases [REF]. The parameters for this run were $M = 9, 11, 21 \quad and \quad SNR = 40dB
 \quad \mu = 0.075 \quad and \quad N = 600$. While the speed of convergence
 generally decreases with increased filter order [REF], it typically increases the eigenvalue spread
 because the input autocorrelation matrix, $\boldsymbol{R}$, has larger dimensions. Therefore it becomes difficult to
 choose a step-size, $\mu$, that will converge for a large filter order.
 $$0 < \mu < \dfrac{2}{tr[\boldsymbol{R}]} = \mu < \dfrac{2}{Mr(0)}  = \dfrac{2}{M(r(0) = h_1^2 + h_2^2 + h_3^2 + \sigma^2_v)} $$
 Which for the second channel and a filter order of 21 is
-$\mu = \dfrac{2}{2.3752} \approx 0.082$. The value of 0.075 is very close to this limit and we can see the divergence as expected.
+$\mu \approx 0.082$. The value of 0.075 is very close to this limit and we can see the divergence as expected.
 The problem can be fixed by changing the
 step size parameter to a more suitable value such as $ \mu = 0.0375$.
-This divergence is demonstrated in Figure ~\ref{fig:filterorder1}
+This divergence is demonstrated in Figure ~\ref{fig:filterorder1}.
 %\vspace{-5mm}
 \subsection{Analysis of Step Size Parameter}
 \vspace{-5mm}
@@ -678,7 +678,7 @@ optimize for convergence speed. This concept is demonstrated in Figure ~\ref{fig
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering,font = small}
-  \includegraphics[width=0.55\textwidth, right] {Plots/Project1_Part5.jpg}
+  \includegraphics[width=0.50\textwidth, right] {Plots/Project1_Part5.jpg}
   \caption{Learning Curves of Standard and Normalized LMS Algorithms}
     \label{fig:normalizedlms}
 \end{figure}
@@ -687,16 +687,27 @@ optimize for convergence speed. This concept is demonstrated in Figure ~\ref{fig
 %\IEEEpubidadjcol
 
 \section{Project 2: Recursive Least Squares Algorithm}
+The RLS algorithm minimizes the weighted mean square error cost function:
+\begin{align*}
+  J(n)=\sum_{i=1}^{n}\lambda^{n-i}d^2(i)-2\boldsymbol{w}^T(n)\sum_{i=1}^{n}\lambda^{n-i}\boldsymbol{d}{u}(i)d(i)+ \\ \boldsymbol{w}^T(n)\sum_{i=1}^{n}\lambda^{n-i}\boldsymbol{u}(i)\boldsymbol{u}^T(i)\boldsymbol{w}(i)
+\end{align*}
+\begin{align*}
+  J(n)= \boldsymbol{D} - 2\boldsymbol{w}^T(n)\boldsymbol{z}(n)+\boldsymbol{w}^T(n)\boldsymbol{F}(n)\boldsymbol{w}(n)
+\end{align*}
+where D is the deterministic variance, \textbf{z} is the deterministic cross-corrleation and \textbf{F}
+is the deterministic autocorrelation of the tap-input vector. It is important to note that throughout these projects $\lambda$,
+which is known as the forgetting factor is set to 1 because the statistics are stationary. To avoid calculating the MSE using the brute force
+approach the RLS takes advantage of the Matrix Inversion Lemma to create a method of resursion for updating the inversion of the correlation matrix.
 The summary of the implemented RLS algorithm is as follows:\\
 \\
-\textbf{Step 1:} Initialize the weight vector and the inverse correlation matrix
-$\boldsymbol{w}(0) = \boldsymbol{0},  \boldsymbol{P}(0) \delta^{-1}\boldsymbol{I}$\\
-\textbf{Step 2:}\\
-For $k = 1:K$\\
-and,\\
+\textbf{Step 1:} \\ \vspace{-5mm}
+\begin{center} Initialize the weight vector and the inverse correlation matrix\end{center}
+$$\boldsymbol{w}(0) = \boldsymbol{0},  \boldsymbol{P}(0) = \delta^{-1}\boldsymbol{I}$$\\
+\vspace{-7mm}\\\textbf{Step 2:}\\
+For $k = 1:K$ and,\\
 For $n = 1:N$\\
-(i.e. for each value of the input sequence $u(n), n = 1,2,...N,$)
-\\ \indent compute the Kalman gain vector
+(i.e. for each value of the input sequence $u(n), n = 1,2,...N$)
+\\ compute the Kalman gain vector
 \begin{equation}
   \boldsymbol{K}(n)= \dfrac{\boldsymbol{P}(n-1)\boldsymbol{u}(n)}{\lambda+\boldsymbol{u}^T(n)\boldsymbol{P}(n-1)\boldsymbol{u}(n)}
 \end{equation}
@@ -739,7 +750,7 @@ to avoid division by zero errors.
 Now that we've learned that the RLS convergence is robust against eigenvalue spread
 and that the step size parameter is non-existent, we would expect the algorithm to
 converge even with a high filter order. For comparison with the LMS we now run the experiment with
-$M = 9, 11, 21, \quad \delta = 0.01 \quad SNR = 40dB \quad N = 600$. This is demonstrated in Figure ~\ref{fig:filterorder2}.
+$M = 9, 11, 21 \quad \delta = 0.01 \quad SNR = 40dB \quad N = 600$. This is demonstrated in Figure ~\ref{fig:filterorder2}.
 As opposed to the LMS algorithm which diverged for $ M = 21$, the RLS is able to track the signal. The plot is offset because
 a larger delay is required for a larger filter order so it takes time for it to propagate through the system. Figure ~\ref{fig:filterorder2}
 proves our theory for convergence even with a high filter order.
@@ -788,12 +799,22 @@ This experiment gives us a good benchmark for understanding the constraints of t
   \centering
   \captionsetup{justification=centering,font = small}
   \includegraphics[width=0.55\textwidth, inner] {Plots/Project2_smallSNR.jpg}
-  \caption{RLS vd LMS Comparison using $SNR = 10dB$}
+  \caption{RLS vs LMS Comparison using $SNR = 10dB$}
     \label{fig:smallsnr}
 \end{figure}
 \section{Project 3: Recursive Least Squares Lattice}
+The Recursive Least Squares Lattice is designed to solve the minimization problem
+using a lattice structure for the prediction phase and an estimator. The lattice predictor
+is a piplined structure. The forward and backward reflection coefficients are used to minimize
+the prediction error powers:
+\begin{equation}
+F_m(n)=\sum_{i=1}^{n}\lambda^{n-i}f^2_m(i); \qquad n = 1,2,....N
+\end{equation}
+\begin{equation}
+B_m(n)=\sum_{i=1}^{n}\lambda^{n-i}b^2_m(i); \qquad n = 1,2,....N
+\end{equation}
 Joint Process Esimation has a lattice structure and an estimation phase using regression coefficients. This structure is
-shown in Figure ~\ref{fig:jointprocess}
+shown in Figure ~\ref{fig:jointprocess}.
 \begin{figure*}
   \centering
   \captionsetup{justification=centering,font = small}
@@ -802,7 +823,7 @@ shown in Figure ~\ref{fig:jointprocess}
     \label{fig:jointprocess}
 \end{figure*}
 It is important to note that in Joint Process Estimation the prediction step starts at $ m = 1 $ and the estimation starts
-at $m = 0$. These are adjusted to 1, and 2 more Matlab indexing purposes. Prediction and estimation are combined into one stage for implementation
+at $m = 0$. These are adjusted to 1, and 2 for Matlab indexing purposes. Prediction and estimation are combined into one stage for implementation
 and a simple if statement is used to begin the processes at different indices.
 The summary of the implemented RLSL algorithm is as follows:\\
 \\
@@ -867,7 +888,7 @@ End k loop\\
 The convergence behaviour of the RLSL is very similar to the RLS. Both algorithms converge in roughly the
 same amount of time steps and the RLSL is also able to equalize the fourth channel. The RLSL does seem to have a
 slight performance advantage over the RLS as the MSE is marginally lower. However, considering the complexity of the implementation
-and the hardware reseource that would be required in real-time implemenation it is not practical to use this algorithm.
+and the hardware resource that would be required in real-time it is not practical to use this algorithm.
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering,font = small}
@@ -898,7 +919,8 @@ the analysis is corrected.
 \subsection{Likelihood Parameter}
 The likilhood parameter indicates stationarity within a dataset. Since this data is
 stationary we expect to see one instance where $\gamma$ drops and then an exponential
-increase back to a congerging value of 1. This is confirmed by Figure ~\ref{fig:likelihood}
+increase back to a congerging value of 1. This means that the a posteriori error approaches the a priori error.
+This is confirmed by Figure ~\ref{fig:likelihood}
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering,font = small}
@@ -911,9 +933,10 @@ The regression coefficients for the implemented RLSL algorithm are shown in Figu
 These coefficients are used to estimate the output by doint a regression sum, that is:
 \begin{equation}
   \label{eq:regsum}
-  \hat{d}(n)= y(n) = \sum_{i=0}^{M}k_ib_i(n); 
+  \hat{d}(n)= y(n) = \sum_{i=0}^{M}k_ib_i(n);
 \end{equation}
-
+These coefficients play a similar role as the tap-weight coefficients in a Wiener filter. However, as seen in
+the plot, these coefficients do not have a perfect symmetry around the center tap.
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering,font = small}
@@ -1018,7 +1041,18 @@ These coefficients are used to estimate the output by doint a regression sum, th
 
 
 \section{Conclusion}
-The conclusion goes here.
+The experiments conducted for equalization of a four dispersive channels in ENEL 671
+has brought great insight into implementation techniques, performance, design considerations
+and applicability of three different adaptive algorithms. The LMS algorithm is shown to be
+the most rudimentary algorithm. The advantage of this is its relatively simple implementation. However,
+careful consideration of it's limitations such as the step-size, filter order, convergence speed and their interdependence must
+be carefully analyzed. The Recursive Least Squares algorithm is very robust to channel distortion (eigenvalue spread) and the
+algorithm converges very quickly. This method is computationaly more complex than the LMS, therefore depending
+on the requirements of the application it may not be required. The RLSL algorithm is by far the most complicated to implement.
+Careful analysis of parameters such as the likelihood factor need to be monitored to understand the performance. The mean square
+error of the RLSL was very marginally improved from the RLS with a very similar convergence speed. However, since a lattice
+structure is highly pipelined the implentation in VLSI is very practicle.
+
 
 % if have a single appendix:
 %\appendix[Proof of the Zonklar Equations]
@@ -1043,12 +1077,6 @@ Appendix one text goes here.
 \section{}
 Appendix two text goes here.
 
-
-% use section* for acknowledgment
-\section*{Acknowledgment}
-
-
-The authors would like to thank...
 
 
 % Can use something like this to put references on a page
@@ -1081,13 +1109,16 @@ The authors would like to thank...
 % <OR> manually copy in the resultant .bbl file
 % set second argument of \begin to the number of references
 % (used to reserve space for the reference number labels box)
-\begin{thebibliography}{1}
+%\begin{thebibliography}{1}
+%\cite{iso}
 
-\bibitem{IEEEhowto:kopka}
-H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
-  0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
+%\section{References}
+%\printbibliography[heading=none]
+%\bibitem{IEEEhowto:kopka}
+%A.~Sesay, \emph{Adaptive Signal Processing}, ENEL 671Lecture Notes. \hskip 1em plus
+%  0.5em minus 0.4em\relax Department of Electrical \& Computer Engineering, University of Calgary, 2016.
 
-\end{thebibliography}
+%\end{thebibliography}
 
 % biography section
 %
@@ -1100,22 +1131,7 @@ H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
 %\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{mshell}}]{Michael Shell}
 % or if you just want to reserve a space for a photo:
 
-\begin{IEEEbiography}{Michael Shell}
-Biography text here.
-\end{IEEEbiography}
 
-% if you will not have a photo at all:
-\begin{IEEEbiographynophoto}{John Doe}
-Biography text here.
-\end{IEEEbiographynophoto}
-
-% insert where needed to balance the two columns on the last page with
-% biographies
-%\newpage
-
-\begin{IEEEbiographynophoto}{Jane Doe}
-Biography text here.
-\end{IEEEbiographynophoto}
 
 % You can push biographies down or up by placing
 % a \vfill before or after them. The appropriate
