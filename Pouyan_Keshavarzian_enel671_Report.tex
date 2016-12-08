@@ -574,17 +574,17 @@ As is shown, each channel has progressively worse eigenvalue spread. The effect
 of this on certain algorithms will be discussed in the following sections
 
 \section{Project 1: Least Mean Squares Algorithm}
-The LMS algorithm implements a search method to iteratively update the
+The LMS algorithm implements a search method using a step size, $\mu$, to iteratively update the
 filter tap weights to find a solution that minimizes the mean square error\cite{widrow1976stationary}.
 
 The mean squared error is defined by:
 $$\boldsymbol{J}(n) = \sigma^2_d - 2\boldsymbol{w}^T\boldsymbol{p} + \boldsymbol{w}^T\boldsymbol{R}\boldsymbol{w}$$ where
-$\sigma^2_d$ is the constant deterministic variance and the tap-weight vector is
+$\sigma^2_d$ is the deterministic variance and the tap-weight vector is updated using:
 $$ \boldsymbol{w}(n)= \boldsymbol{w}(n-1)+\mu\boldsymbol{u}(n)e(n)$$
-The filter output which is the tap-weight vector multipled by the tap input vector
+The filter output is the tap-weight vector multipled by the tap input vector:
 $$\hat{d}(n) = y(n) = \boldsymbol{w}^T(n)\boldsymbol{u}(n) = \boldsymbol{u}^T(n)\boldsymbol{w}(n)$$
 Intuitively the error of the filter is simply the estimate subtracted from the desired signal.
-$$e(n) = d(n) - \hat{d}(n) = d(n) - \boldsymbol{w}^T\boldsymbol{u}(n)$$
+$$e(n) = d(n) - \hat{d}(n) = d(n) - \boldsymbol{w}^T(n)\boldsymbol{u}(n)$$
 Which in the context of this project is the randomly generated BPSK signal, $a(n)$. The summary of the implemented LMS algorithm is as follows:\\
 \\
 \textbf{Step 1:} $\boldsymbol{w}(0) = \boldsymbol{0} $\\
@@ -615,7 +615,7 @@ End k loop\\
 \end{equation}
 \subsection{Effect of Eigenvalue Spread}
 The LMS algorithm was run with total K = 500 iterations and the error for each value of the tap-input vector N = 600 was averaged.
-This MSE is calculated using Equation ~\ref{eq:MSE}. This is known as the learning curve and it is used to judge the
+This MSE is calculated using the method described above. This is known as the learning curve and it is used to judge the
 performance of each experiment. The results for the eigenvalue spread experiment are shown in Figure~\ref{fig:eigenspread}.
 The experiment was run with $M = 11, \quad and \quad SNR = 40dB$.
 
@@ -627,7 +627,7 @@ The experiment was run with $M = 11, \quad and \quad SNR = 40dB$.
     \label{fig:eigenspread}
 \end{figure}
 These results show that the LMS is very susceptible to eigenvalue spread. Each channel,
-which has progressively more distortion, has an increased convergence rate and the mean square
+which has progressively more distortion, has an increased convergence time and the mean square
 error settles at a higher value. It is shown that the LMS is not capable of
 removing the distortion from channel four.
 
@@ -640,17 +640,16 @@ removing the distortion from channel four.
     \label{fig:filterorder1}
 \end{figure}
 Figure ~\ref{fig:filterorder1} reinforces the notion that the misadjustment
-of the LMS filter increases as the filter order increases [REF]. The parameters for this run were $M = 9, 11, 21 \quad and \quad SNR = 40dB
+of the LMS filter increases as the filter order increases \cite{goldenberg1985digital}. The parameters for this run were $M = 9, 11, 21 \quad and \quad SNR = 40dB
 \quad \mu = 0.075 \quad and \quad N = 600$. While the speed of convergence
-generally decreases with increased filter order [REF], it typically increases the eigenvalue spread
+generally decreases with increased filter order \cite{goldenberg1985digital}, it typically increases the eigenvalue spread
 because the input autocorrelation matrix, $\boldsymbol{R}$, has larger dimensions. Therefore it becomes difficult to
 choose a step-size, $\mu$, that will converge for a large filter order.
 $$0 < \mu < \dfrac{2}{tr[\boldsymbol{R}]} = \mu < \dfrac{2}{Mr(0)}  = \dfrac{2}{M(r(0) = h_1^2 + h_2^2 + h_3^2 + \sigma^2_v)} $$
-Which for the second channel and a filter order of 21 is
+For the second channel and a filter order of 21
 $\mu \approx 0.082$. The value of 0.075 is very close to this limit and we can see the divergence as expected.
 The problem can be fixed by changing the
 step size parameter to a more suitable value such as $ \mu = 0.0375$.
-This divergence is demonstrated in Figure ~\ref{fig:filterorder1}.
 %\vspace{-5mm}
 \subsection{Analysis of Step Size Parameter}
 \vspace{-5mm}
@@ -663,11 +662,11 @@ This divergence is demonstrated in Figure ~\ref{fig:filterorder1}.
 \end{figure}
 As previously discussed, increasing the step-size parameter will decrease the
 convergence time. This is demonstrated by the convergence speed formula:
-$$ \tau = \dfrac{1}{\mu\lambda}$$ However, there are a couple things to keep in mind. First, a
+$$ \tau = \dfrac{1}{\mu\lambda}$$ There are a couple things to keep in mind. First, a
 step-size which is smaller than the maximum value is required. This must meet the condtions outlined in the previous section.
 \\
 \\
-However we can see that the settling MSE is higher for the faster convergence. Therefore the learning curve
+However in Figure ~\ref{fig:stepsize} we can see that the settling MSE is higher for the faster convergence. Therefore the learning curve
 clearly demostrates the important consideration when selecting step-size; an increased step-size provides
 faster convergence at the cost of increased misadjustment.
 \subsection{Comparison of Normalized LMS and Standard LMS}
@@ -698,8 +697,8 @@ The RLS algorithm minimizes the weighted mean square error cost function:
 \end{align*}
 where D is the deterministic variance, \textbf{z} is the deterministic cross-corrleation and \textbf{F}
 is the deterministic autocorrelation of the tap-input vector. It is important to note that throughout these projects $\lambda$,
-which is known as the forgetting factor is set to 1 because the statistics are stationary. To avoid calculating the MSE using the brute force
-approach the RLS takes advantage of the Matrix Inversion Lemma to create a method of resursion for updating the inversion of the correlation matrix.
+which is known as the forgetting factor,\textbf{is always set to 1} because the statistics are stationary. To avoid calculating the MSE using the brute force
+approach, the RLS takes advantage of the Matrix Inversion Lemma to create a method of resursion for updating the inversion of the correlation matrix.
 The summary of the implemented RLS algorithm is as follows:\\
 \\
 \textbf{Step 1:} \\ \vspace{-5mm}
@@ -733,13 +732,13 @@ End k loop\\
   MSE=\dfrac{1}{K}\sum_{k=1}^{K}e_k^2(n); \qquad n = 1,2,....N
 \end{equation}
 \subsection{Effect of Eigenvalue Spread}
-The same experiment that was performed in the LMS project to observe the RLS' ability to
+The same experiment that was performed in the LMS project is rerun to observe the RLS' ability to
 converge across increasing eigenvalue spread. As is shown in Figure ~\ref{fig:eigenspread2},
 the RLS algorithim's convergence speed is not effected by eigenvalue spread. All four channels converge
 within roughly 25 iterations of the N loop. This is in stark contrast to the LMS algorithm which
 required over 100 iterations to converge even with a large step size. However, the misadjustment is still dependent on
 the level of dispersion in the channel as the mean square error settles at a larger value for each consecutive channel. The experiment was run
-with $M = 11, \quad \delta = 0.01 \quad SNR = 40dB \quad N = 600$ where, $\delta$ is a parameter is for implementation
+with $M = 11, \quad \delta = 0.01 \quad SNR = 40dB \quad N = 600$ where, $\delta$ is a parameter for implementation
 to avoid division by zero errors.
 \begin{figure}[H]
   \centering
@@ -807,7 +806,7 @@ This experiment gives us a good benchmark for understanding the constraints of t
 \section{Project 3: Recursive Least Squares Lattice}
 The Recursive Least Squares Lattice is designed to solve the minimization problem
 using a lattice structure for the prediction phase and an estimator. The lattice predictor
-is a piplined structure. The forward and backward reflection coefficients are used to minimize
+is a pipelined structure. The forward and backward reflection coefficients are used to minimize
 the prediction error powers:
 \begin{equation}
 F_m(n)=\sum_{i=1}^{n}\lambda^{n-i}f^2_m(i); \qquad n = 1,2,....N
@@ -923,7 +922,7 @@ the analysis is corrected.
 The likilhood parameter indicates stationarity within a dataset. Since this data is
 stationary we expect to see one instance where $\gamma$ drops and then an exponential
 increase back to a congerging value of 1. This means that the a posteriori error approaches the a priori error.
-This is confirmed by Figure ~\ref{fig:likelihood}
+This is confirmed by Figure ~\ref{fig:likelihood}.
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering,font = small}
@@ -1044,7 +1043,7 @@ the plot, these coefficients do not have a perfect symmetry around the center ta
 
 
 \section{Conclusion}
-The experiments conducted for equalization of a four dispersive channels in ENEL 671
+The experiments conducted for equalization of four dispersive channels in ENEL 671
 has brought great insight into implementation techniques, performance, design considerations
 and applicability of three different adaptive algorithms. The LMS algorithm is shown to be
 the most rudimentary algorithm. The advantage of this is its relatively simple implementation. However,
@@ -1054,7 +1053,7 @@ algorithm converges very quickly. This method is computationaly more complex tha
 on the requirements of the application it may not be required. The RLSL algorithm is by far the most complicated to implement.
 Careful analysis of parameters such as the likelihood factor need to be monitored to understand the performance. The mean square
 error of the RLSL was very marginally improved from the RLS with a very similar convergence speed. However, since a lattice
-structure is highly pipelined the implentation in VLSI is very practicle.\cite{widrow1976stationary}
+structure is highly pipelined the implementation in VLSI is very practicle.
 
 
 % if have a single appendix:
