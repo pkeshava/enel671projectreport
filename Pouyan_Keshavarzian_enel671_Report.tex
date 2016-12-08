@@ -783,7 +783,7 @@ frequency.
 \subsection{Small SNR Analysis}
 Finally a comparison between the RLS and LMS with small $SNR = 10dB$ is shown in Figure ~\ref{fig:smallsnr}. Neither the RLS or LMS performs nearly as well
 as when the larger signal-to-noise ratio of $40dB$ was used. Their settling values for MSE are roughly 0.1 and 0.8 respectively as opposed to the previous values of roughly $10^{-4}$.
-This experiment gives us a good benchmark for understanding the constraints of the algorithm in a real world implementation. 
+This experiment gives us a good benchmark for understanding the constraints of the algorithm in a real world implementation.
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering,font = small}
@@ -792,7 +792,82 @@ This experiment gives us a good benchmark for understanding the constraints of t
     \label{fig:smallsnr}
 \end{figure}
 \section{Project 3: Recursive Least Squares Lattice}
-
+Joint Process Esimation has a lattice structure and an estimation phase using regression coefficients. This structure is
+shown in Figure ~\ref{fig:jointprocess}
+\begin{figure*}
+  \centering
+  \captionsetup{justification=centering,font = small}
+  \includegraphics[width=0.75\textwidth] {Plots/jointprocess}
+  \caption{Block Diagram for Joint Process Estimation}
+    \label{fig:jointprocess}
+\end{figure*}
+It is important to note that in Joint Process Estimation the prediction step starts at $ m = 1 $ and the estimation starts
+at $m = 0$. These are adjusted to 1, and 2 more Matlab indexing purposes. Prediction and estimation are combined into one stage for implementation
+and a simple if statement is used to begin the processes at different indices.
+The summary of the implemented RLSL algorithm is as follows:\\
+\\
+\textbf{Step 1:} Initialize the algorithm for both prediction and estimation:
+$b_m(n) = 0, \quad B_m(n) = \delta, \quad F_m(n) = \delta, \quad \Delta_{m-1}(n) = 0, \quad \gamma_{m-1}(n) = 1,\quad \rho_{m}(0) = 0$\\
+\textbf{Step 2:}\\
+For $k = 1:K$\\
+and,\\
+For $n = 0:N$\\
+(i.e. for each value of the input sequence $u(n), n = 1,2,...N,$)
+\\ \indent Start the algorithm and initialize the required parameters for the input stage.
+$$b_0(n) = u(n), \quad f_0(n) = u(n), \quad F_0(n) = \lambda F_0(n-1) + u^2(n), \quad$$
+$$B_0(n) = F_0(n), \quad \gamma_0(n) = 1,\quad e_0(n) = d(n)$$
+\indent \textbf{Step 3:} Time update for each predictor stage
+\begin{equation}
+  \Delta_{m-1}(n) = \Delta_{m-1}(n) + \dfrac{b_{m-1}(n-1)f_{m-1}(n)}{\gamma_{m-1}(n-1)}
+\end{equation}
+\begin{equation}
+  \gamma_{f,m}(n)= -\dfrac{\Delta_{m-1}(n-1)}{B_{m-1}(n-1)}
+\end{equation}
+\begin{equation}
+  \gamma_{b,m}(n)= -\dfrac{\Delta_{m-1}(n-1)}{F_{m-1}(n)}
+\end{equation}
+\begin{equation}
+  \rho_m(n) = \lambda\rho_m(n-1)+\dfrac{b_{m}(n)}{\gamma_{m}(n)}\alpha_m(n)
+\end{equation}
+\begin{equation}
+  \kappa_m(n) = \dfrac{\rho_{m}(n)}{B_{m}(n)}
+\end{equation}
+\indent Order update:
+\begin{equation}
+  f_m(n) = f_{m-1}(n) + \Gamma_{f,m}(n)b_{m-1}(n-1)
+\end{equation}
+\begin{equation}
+  b_m(n) = b_{m-1}(n-1) + \Gamma_{b,m}(n)f_{m-1}(n)
+\end{equation}
+\begin{equation}
+  F_m(n) = F_{m-1}(n) + \Gamma_{f,m}(n)\Delta_{m-1}(n)
+\end{equation}
+\begin{equation}
+  B_m(n) = B_{m-1}(n-1) + \Gamma_{b,m}(n)\Delta_{m-1}(n)
+\end{equation}
+\begin{equation}
+  \gamma_m(n) = \gamma_{m-1}(n) - \dfrac{b^2_{m-1}(n)}{B_{m-1}(n)}
+\end{equation}
+\begin{equation}
+  \alpha_{m+1}(n) = \alpha_{m}(n) - \kappa_m(n)b_m(n)
+\end{equation}
+End n loop\\
+\indent \textbf{Step 4:} calculate a posteriori error for final stage before squaring error
+\begin{equation}
+  e_{11}(n) = \dfrac{\alpha_{11}(n)}{\gamma_{11}(n)}
+\end{equation}
+\textbf{Step 5:} Add squared error for MSE calculation\\
+End k loop\\
+\textbf{Step 6:} Calculate MSE
+\begin{equation}
+  \label{eq:MSE}
+  MSE=\dfrac{1}{K}\sum_{k=1}^{K}e_k^2(n); \qquad n = 1,2,....N
+\end{equation}
+\subsection{Effect of Eigenvalue Spread}
+The convergence behaviour of the RLSL is very similar to the RLS. Both algorithms converge in roughly the
+same amount of time steps and the RLSL is also able to equalize the fourth channel. The RLSL does seem to have a
+slight performance advantage over the RLS as the MSE is marginally lower. However, considering the complexity of the implementation
+and the hardware reseource that would be required in real-time implemenation it is not practical to use this algorithm.
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering,font = small}
@@ -800,15 +875,12 @@ This experiment gives us a good benchmark for understanding the constraints of t
   \caption{A Posteriori Mean Square Erro}
     \label{fig:MSEEp}
 \end{figure}
-
-\begin{figure}[H]
-  \centering
-  \captionsetup{justification=centering,font = small}
-  \includegraphics[width=0.55\textwidth, inner] {Plots/Project3_LIKLIHOOD.jpg}
-  \caption{Liklihood Parameter, $\gamma_m$}
-    \label{fig:liklihood}
-\end{figure}
-
+\subsection{Reflection Coefficients}
+The reflection coefficients are plotted in Figures ~\ref{fig:gammaf} and ~\ref{fig:gammab}. The
+forward parameter has a much larger spike at the beginning of the algorithm than the backward does. The backward
+coefficient never is larger in magnitude than 0.03. It can be seen that both forward and backward coefficients converge to
+almost 0 within a couple hundred iterations. It can be seen that neither magnitude value is greather than 1 and therefore
+the analysis is corrected.
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering,font = small}
@@ -816,15 +888,32 @@ This experiment gives us a good benchmark for understanding the constraints of t
   \caption{Forward Reflection Coefficient}
     \label{fig:gammaf}
 \end{figure}
-
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering,font = small}
   \includegraphics[width=0.55\textwidth, inner] {Plots/Project3_GAMMA_B.jpg}
   \caption{Backward Reflection Coefficient}
     \label{fig:gammab}
-
 \end{figure}
+\subsection{Likelihood Parameter}
+The likilhood parameter indicates stationarity within a dataset. Since this data is
+stationary we expect to see one instance where $\gamma$ drops and then an exponential
+increase back to a congerging value of 1. This is confirmed by Figure ~\ref{fig:likelihood}
+\begin{figure}[H]
+  \centering
+  \captionsetup{justification=centering,font = small}
+  \includegraphics[width=0.55\textwidth, inner] {Plots/Project3_LIKLIHOOD.jpg}
+  \caption{Likelihood Parameter, $\gamma_m$}
+    \label{fig:likelihood}
+\end{figure}
+\subsection{Regression Coefficients}
+The regression coefficients for the implemented RLSL algorithm are shown in Figure ~\ref{fig:regcoeff}.
+These coefficients are used to estimate the output by doint a regression sum, that is:
+\begin{equation}
+  \label{eq:regsum}
+  \hat{d}(n)= y(n) = \sum_{i=0}^{M}k_ib_i(n); 
+\end{equation}
+
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering,font = small}
@@ -926,8 +1015,6 @@ This experiment gives us a good benchmark for understanding the constraints of t
 % Note that, LaTeX2e, unlike IEEE journals/conferences, places
 % footnotes above bottom floats. This can be corrected via the
 % \fnbelowfloat command of the stfloats package.
-
-
 
 
 \section{Conclusion}
